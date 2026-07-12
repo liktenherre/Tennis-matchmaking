@@ -1,0 +1,53 @@
+{
+  "expo": {
+    "name": "Côte Tennis",
+    "slug": "cote-tennis",
+    "version": "0.1.0",
+    "orientation": "portrait",
+    "scheme": "cotetennis",
+    "userInterfaceStyle": "automatic",
+    "ios": {
+      "supportsTablet": false,
+      "bundleIdentifier": "com.cotetennis.app",
+      "infoPlist": {
+        "NSLocationWhenInUseUsageDescription": "Votre position approximative permet de trouver des partenaires proches.",
+        "NSPhotoLibraryUsageDescription": "Ajoutez une photo claire à votre profil de tennis."
+      }
+    },
+    "android": {
+      "package": "com.cotetennis.app",
+      "permissions": [
+        "ACCESS_COARSE_LOCATION",
+        "POST_NOTIFICATIONS"
+      ]
+    },
+    "plugins": [
+      "expo-router",
+      "expo-localization",
+      "expo-notifications",
+      [
+        "expo-location",
+        {
+          "locationWhenInUsePermission": "Votre position approximative permet de trouver des partenaires proches."
+        }
+      ],
+      [
+        "expo-image-picker",
+        {
+          "photosPermission": "Ajoutez une photo claire à votre profil de tennis."
+        }
+      ],
+      [
+        "expo-secure-store",
+        {
+          "configureAndroidBackup": true,
+          "faceIDPermission": "Autorisez Côte Tennis à accéder à votre session."
+        }
+      ]
+    ],
+    "experiments": {
+      "typedRoutes": true,
+      "reactCompiler": true
+    }
+  }
+}

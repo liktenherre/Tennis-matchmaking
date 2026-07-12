@@ -1,0 +1,30 @@
+# Covers the fastest complete signup path on a clean device.
+
+appId: com.cotetennis.app
+name: Phone signup and onboarding
+---
+- launchApp:
+    clearState: true
+- tapOn: "Numéro de téléphone"
+- inputText: "${TEST_PHONE}"
+- tapOn: "Recevoir mon code"
+- assertVisible: "Vérifiez votre numéro"
+- tapOn: "Code à 6 chiffres"
+- inputText: "${TEST_OTP}"
+- tapOn: "Vérifier"
+- assertVisible: "Votre profil"
+- tapOn: "Prénom"
+- inputText: "Testeur"
+- tapOn: "Année de naissance"
+- inputText: "1990"
+- tapOn: "Continuer"
+- assertVisible: "Votre tennis"
+- tapOn: "Intermédiaire"
+- tapOn: "Continuer"
+- assertVisible: "Où jouer ?"
+- tapOn: "Nice"
+- tapOn: "Continuer"
+- assertVisible: "Quand êtes-vous libre ?"
+- tapOn: "Week-end matin"
+- tapOn: "Voir les joueurs"
+- assertVisible: "Découvrir"

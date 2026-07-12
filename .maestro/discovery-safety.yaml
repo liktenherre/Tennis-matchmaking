@@ -1,0 +1,27 @@
+# Covers discovery controls and the safety entry point from an existing test session.
+
+appId: com.cotetennis.app
+name: Discovery and safety controls
+---
+- launchApp:
+    clearState: true
+- tapOn: "Numéro de téléphone"
+- inputText: "${MATCHED_TEST_PHONE}"
+- tapOn: "Recevoir mon code"
+- tapOn: "Code à 6 chiffres"
+- inputText: "${TEST_OTP}"
+- tapOn: "Vérifier"
+- assertVisible: "Découvrir"
+- tapOn: "Critères"
+- assertVisible: "Distance maximale (km)"
+- tapOn: "Femmes"
+- tapOn: "Enregistrer les critères"
+- tapOn: "Matchs"
+- assertVisible: "Partant pour samedi matin ?"
+- tapOn: "Partant pour samedi matin ?"
+- tapOn: "Message"
+- inputText: "On joue samedi matin ?"
+- tapOn: "Envoyer"
+- tapOn: "Sécurité"
+- assertVisible: "Signaler"
+- tapOn: "Annuler"
