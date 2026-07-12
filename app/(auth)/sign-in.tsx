@@ -11,6 +11,10 @@ import { colors, spacing } from '@/theme';
 
 const phoneSchema = z.string().regex(/^\+[1-9]\d{7,14}$/);
 
+/** Local-only phone + OTP mapped in supabase/config.toml [auth.sms.test_otp]. */
+const DEV_PHONE = '+33699999999';
+const DEV_OTP = '123456';
+
 export default function SignInScreen() {
   const { t } = useTranslation();
   const [phone, setPhone] = useState('+33');
@@ -35,6 +39,33 @@ export default function SignInScreen() {
     }
 
     router.push({ pathname: '/verify', params: { phone: parsed.data } });
+  };
+
+  // Skips SMS in Expo Go / simulators by verifying the fixed local test OTP immediately.
+  const signInAsDeveloper = async () => {
+    setError('');
+    setIsSending(true);
+
+    const { error: sendError } = await supabase.auth.signInWithOtp({ phone: DEV_PHONE });
+    if (sendError) {
+      setIsSending(false);
+      setError(sendError.message);
+      return;
+    }
+
+    const { error: verifyError } = await supabase.auth.verifyOtp({
+      phone: DEV_PHONE,
+      token: DEV_OTP,
+      type: 'sms',
+    });
+    setIsSending(false);
+
+    if (verifyError) {
+      setError(verifyError.message);
+      return;
+    }
+
+    router.replace('/');
   };
 
   return (
@@ -63,6 +94,14 @@ export default function SignInScreen() {
           error={error}
         />
         <Button label={t('auth.sendCode')} onPress={sendCode} loading={isSending} />
+        {__DEV__ ? (
+          <Button
+            label="Dev sign-in (skip SMS)"
+            onPress={signInAsDeveloper}
+            loading={isSending}
+            variant="secondary"
+          />
+        ) : null}
         <Text selectable style={{ color: colors.muted, textAlign: 'center', lineHeight: 20 }}>
           {t('auth.ageConsent')}
         </Text>
