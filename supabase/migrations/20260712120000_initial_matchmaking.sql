@@ -319,6 +319,10 @@ insert into storage.buckets (id, name, public, file_size_limit, allowed_mime_typ
 values ('profile-photos', 'profile-photos', false, 5242880, array['image/jpeg', 'image/png', 'image/webp'])
 on conflict (id) do nothing;
 
+-- Upsert uploads require SELECT + INSERT + UPDATE; INSERT alone is not enough.
+create policy "Players read their own profile photos"
+on storage.objects for select to authenticated
+using (bucket_id = 'profile-photos' and (storage.foldername(name))[1] = auth.uid()::text);
 create policy "Players upload their own profile photos"
 on storage.objects for insert to authenticated
 with check (bucket_id = 'profile-photos' and (storage.foldername(name))[1] = auth.uid()::text);
@@ -405,7 +409,7 @@ as $$
         where (b.blocker_id = auth.uid() and b.blocked_user_id = p.id)
            or (b.blocker_id = p.id and b.blocked_user_id = auth.uid())
       )
-    group by p.id, l.approximate_point, me.approximate_point, me.city
+    group by p.id, l.approximate_point, l.city, me.approximate_point, me.city
   )
   select
     candidates.id,
@@ -711,6 +715,14 @@ as $$
   delete from public.push_tokens
   where token = token_input and user_id = auth.uid();
 $$;
+
+-- RLS policies alone are not enough: PostgREST still needs table privileges.
+grant usage on schema public to anon, authenticated, service_role;
+grant usage on type public.tennis_level to anon, authenticated, service_role;
+grant usage on type public.match_format to anon, authenticated, service_role;
+grant usage on type public.match_status to anon, authenticated, service_role;
+grant all on all tables in schema public to anon, authenticated, service_role;
+grant all on all sequences in schema public to anon, authenticated, service_role;
 
 grant execute on function public.discover_profiles(integer, integer, integer, public.tennis_level[], public.match_format, text[], text) to authenticated;
 grant execute on function public.is_blocked_pair(uuid) to authenticated;

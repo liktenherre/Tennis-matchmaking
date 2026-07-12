@@ -11,9 +11,9 @@ import { colors, spacing } from '@/theme';
 
 const phoneSchema = z.string().regex(/^\+[1-9]\d{7,14}$/);
 
-/** Local-only phone + OTP mapped in supabase/config.toml [auth.sms.test_otp]. */
-const DEV_PHONE = '+33699999999';
-const DEV_OTP = '123456';
+/** Local-only credentials — email auth avoids the SMS provider requirement entirely. */
+const DEV_EMAIL = 'dev@cotetennis.local';
+const DEV_PASSWORD = 'cote-tennis-dev';
 
 export default function SignInScreen() {
   const { t } = useTranslation();
@@ -41,27 +41,31 @@ export default function SignInScreen() {
     router.push({ pathname: '/verify', params: { phone: parsed.data } });
   };
 
-  // Skips SMS in Expo Go / simulators by verifying the fixed local test OTP immediately.
+  // Bypasses phone OTP entirely — GoTrue rejects SMS without a configured provider,
+  // even when auth.sms.test_otp is set.
   const signInAsDeveloper = async () => {
     setError('');
     setIsSending(true);
 
-    const { error: sendError } = await supabase.auth.signInWithOtp({ phone: DEV_PHONE });
-    if (sendError) {
+    const { error: signInError } = await supabase.auth.signInWithPassword({
+      email: DEV_EMAIL,
+      password: DEV_PASSWORD,
+    });
+
+    if (!signInError) {
       setIsSending(false);
-      setError(sendError.message);
+      router.replace('/');
       return;
     }
 
-    const { error: verifyError } = await supabase.auth.verifyOtp({
-      phone: DEV_PHONE,
-      token: DEV_OTP,
-      type: 'sms',
+    const { error: signUpError } = await supabase.auth.signUp({
+      email: DEV_EMAIL,
+      password: DEV_PASSWORD,
     });
     setIsSending(false);
 
-    if (verifyError) {
-      setError(verifyError.message);
+    if (signUpError) {
+      setError(signUpError.message);
       return;
     }
 
@@ -72,12 +76,8 @@ export default function SignInScreen() {
     <Screen>
       <View style={{ flex: 1, justifyContent: 'center', gap: spacing.xl }}>
         <View style={{ gap: spacing.md }}>
-          <Text style={{ color: colors.clay, fontSize: 18, fontWeight: '800' }}>
-            CÔTE TENNIS
-          </Text>
-          <Text
-            style={{ color: colors.ink, fontSize: 38, fontWeight: '800', lineHeight: 42 }}
-          >
+          <Text style={{ color: colors.clay, fontSize: 18, fontWeight: '800' }}>CÔTE TENNIS</Text>
+          <Text style={{ color: colors.ink, fontSize: 38, fontWeight: '800', lineHeight: 42 }}>
             {t('auth.title')}
           </Text>
           <Text style={{ color: colors.muted, fontSize: 18, lineHeight: 26 }}>
@@ -96,7 +96,7 @@ export default function SignInScreen() {
         <Button label={t('auth.sendCode')} onPress={sendCode} loading={isSending} />
         {__DEV__ ? (
           <Button
-            label="Dev sign-in (skip SMS)"
+            label="Dev sign-in (email)"
             onPress={signInAsDeveloper}
             loading={isSending}
             variant="secondary"
