@@ -1,17 +1,15 @@
-// Defines the visual language shared by every Côte Tennis screen.
+// Broadcast Scoreboard palette shared with NativeWind theme tokens.
 
 export const colors = {
-  clay: '#E96B43',
-  clayDark: '#B94625',
-  court: '#205C46',
-  courtLight: '#DCEBE4',
-  ball: '#D8F24A',
-  ink: '#15211C',
-  muted: '#66736D',
-  canvas: '#F7F5F0',
+  ink: '#14161A',
+  lime: '#B4CE38',
+  canvas: '#F5F6F2',
+  blue: '#3D74E0',
   surface: '#FFFFFF',
-  border: '#DDE2DE',
-  danger: '#B42318',
+  muted: '#8C9096',
+  muted2: '#6B6B6B',
+  border: '#E2E4DE',
+  danger: '#E5484D',
 } as const;
 
 export const spacing = {
@@ -23,8 +21,7 @@ export const spacing = {
 } as const;
 
 export const radius = {
-  sm: 12,
-  md: 20,
-  lg: 28,
-  pill: 999,
+  sm: 4,
+  md: 6,
+  lg: 8,
 } as const;

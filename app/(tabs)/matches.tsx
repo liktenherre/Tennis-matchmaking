@@ -1,13 +1,15 @@
 // Lists mutual matches and refreshes when conversations change.
 
-import { Image } from 'expo-image';
 import { Link } from 'expo-router';
 import { useCallback, useEffect, useState } from 'react';
-import { ActivityIndicator, FlatList, Pressable, Text, View } from 'react-native';
+import { ActivityIndicator } from 'react-native';
 import { useTranslation } from 'react-i18next';
+import { DisplayTitle, Eyebrow } from '@/components/ui';
 import { fetchMatches, type MatchSummary } from '@/features/chat/chat-service';
 import { supabase } from '@/lib/supabase';
-import { colors, radius, spacing } from '@/theme';
+import { colors } from '@/theme';
+import { FlatList, Pressable, Text, View } from '@/tw';
+import { Image } from '@/tw/image';
 
 export default function MatchesScreen() {
   const { t } = useTranslation();
@@ -41,8 +43,8 @@ export default function MatchesScreen() {
 
   if (isLoading) {
     return (
-      <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
-        <ActivityIndicator color={colors.court} />
+      <View className="flex-1 items-center justify-center bg-canvas">
+        <ActivityIndicator color={colors.lime} />
       </View>
     );
   }
@@ -52,18 +54,12 @@ export default function MatchesScreen() {
       contentInsetAdjustmentBehavior="automatic"
       data={matches}
       keyExtractor={(item) => item.id}
-      contentContainerStyle={{
-        flexGrow: 1,
-        padding: spacing.lg,
-        gap: spacing.sm,
-        backgroundColor: colors.canvas,
-      }}
+      className="flex-1 bg-canvas"
+      contentContainerClassName="grow gap-2 p-6"
       ListEmptyComponent={
-        <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center', gap: spacing.md }}>
-          <Text style={{ color: colors.ink, fontSize: 28, fontWeight: '800' }}>
-            {t('matches.emptyTitle')}
-          </Text>
-          <Text style={{ color: colors.muted, fontSize: 17, textAlign: 'center' }}>
+        <View className="flex-1 items-center justify-center gap-3">
+          <DisplayTitle className="text-center">{t('matches.emptyTitle')}</DisplayTitle>
+          <Text className="text-center font-sans text-[17px] text-muted">
             {error || t('matches.empty')}
           </Text>
         </View>
@@ -72,29 +68,23 @@ export default function MatchesScreen() {
         <Link href={{ pathname: '/chat/[matchId]', params: { matchId: item.id } }} asChild>
           <Pressable
             accessibilityRole="button"
-            style={{
-              minHeight: 80,
-              flexDirection: 'row',
-              alignItems: 'center',
-              gap: spacing.md,
-              padding: spacing.md,
-              borderRadius: radius.md,
-              backgroundColor: colors.surface,
-            }}
+            className="min-h-20 flex-row items-center gap-4 border border-border bg-surface p-4"
           >
             <Image
               source={
                 item.photoUrl ??
                 'https://images.unsplash.com/photo-1595435934249-5df7ed86e1c0'
               }
-              style={{ width: 56, height: 56, borderRadius: radius.pill }}
-              contentFit="cover"
+              className="h-14 w-14 rounded-sm bg-ink object-cover"
             />
-            <View style={{ flex: 1, gap: spacing.xs }}>
-              <Text style={{ color: colors.ink, fontSize: 17, fontWeight: '700' }}>
-                {item.firstName}
-              </Text>
-              <Text numberOfLines={1} style={{ color: colors.muted }}>
+            <View className="flex-1 gap-1">
+              <View className="flex-row items-baseline justify-between gap-2">
+                <Text className="font-display text-[26px] leading-none tracking-[0.02em] text-ink">
+                  {item.firstName}
+                </Text>
+                <Eyebrow>Match</Eyebrow>
+              </View>
+              <Text numberOfLines={1} className="font-sans text-[15px] text-muted">
                 {item.lastMessage ?? t('matches.greeting')}
               </Text>
             </View>

@@ -1,7 +1,6 @@
-// Renders the filter-aware swipe deck and records private interest decisions.
+// Renders the filter-aware swipe deck as broadcast lower-thirds.
 
 import * as Haptics from 'expo-haptics';
-import { Image } from 'expo-image';
 import { Link, useFocusEffect } from 'expo-router';
 import { useCallback, useMemo, useRef, useState } from 'react';
 import {
@@ -9,18 +8,17 @@ import {
   Alert,
   Animated,
   PanResponder,
-  Pressable,
-  Text,
   useWindowDimensions,
-  View,
 } from 'react-native';
 import { useTranslation } from 'react-i18next';
-import { Button, Screen } from '@/components/ui';
+import { Button, DisplayTitle, Eyebrow, Screen } from '@/components/ui';
 import type { DiscoveryPreferences, DiscoveryProfile } from '@/features/matching/matching';
 import { fetchCandidates, recordSwipe } from '@/features/matching/matching-service';
 import { track } from '@/lib/analytics';
 import { supabase } from '@/lib/supabase';
-import { colors, radius, spacing } from '@/theme';
+import { colors, spacing } from '@/theme';
+import { Image } from '@/tw/image';
+import { Pressable, Text, View } from '@/tw';
 
 const defaultPreferences: DiscoveryPreferences = {
   maximumDistanceKm: 25,
@@ -150,22 +148,33 @@ export default function DiscoverScreen() {
   if (isLoading) {
     return (
       <Screen>
-        <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
-          <ActivityIndicator color={colors.court} size="large" />
+        <View className="flex-1 items-center justify-center">
+          <ActivityIndicator color={colors.lime} size="large" />
         </View>
       </Screen>
     );
   }
 
+  const levelLabel = current
+    ? t(
+        {
+          beginner: 'onboarding.beginner',
+          intermediate: 'onboarding.intermediate',
+          advanced: 'onboarding.advanced',
+          competition: 'onboarding.competition',
+        }[current.level],
+      )
+    : '';
+
   return (
     <Screen>
-      <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
-        <Text style={{ color: colors.muted }}>
+      <View className="flex-row items-center justify-between">
+        <Eyebrow>
           {t('discover.radius', { distance: preferences.maximumDistanceKm })}
-        </Text>
+        </Eyebrow>
         <Link href="/filters" asChild>
           <Pressable accessibilityRole="button">
-            <Text style={{ color: colors.court, fontWeight: '700' }}>
+            <Text className="font-mono text-[11px] uppercase tracking-[0.12em] text-blue">
               {t('discover.filters')}
             </Text>
           </Pressable>
@@ -173,8 +182,8 @@ export default function DiscoverScreen() {
       </View>
 
       {error ? (
-        <View style={{ gap: spacing.md }}>
-          <Text selectable accessibilityRole="alert" style={{ color: colors.danger }}>
+        <View className="gap-4">
+          <Text selectable accessibilityRole="alert" className="font-sans text-danger">
             {error}
           </Text>
           <Button label={t('common.retry')} variant="secondary" onPress={load} />
@@ -199,44 +208,33 @@ export default function DiscoverScreen() {
               ],
             }}
           >
-            <View
-              style={{
-                overflow: 'hidden',
-                borderRadius: radius.lg,
-                borderCurve: 'continuous',
-                backgroundColor: colors.surface,
-                boxShadow: '0 12px 32px rgba(21, 33, 28, 0.14)',
-              }}
-            >
+            <View className="overflow-hidden rounded-md bg-ink">
               <Image
                 source={
                   current.photoUrl ??
                   'https://images.unsplash.com/photo-1595435934249-5df7ed86e1c0'
                 }
-                style={{ width: '100%', aspectRatio: 0.88, backgroundColor: colors.courtLight }}
-                contentFit="cover"
+                className="aspect-[0.88] w-full bg-ink object-cover"
                 transition={180}
               />
-              <View style={{ gap: spacing.sm, padding: spacing.lg }}>
-                <Text style={{ color: colors.ink, fontSize: 28, fontWeight: '800' }}>
-                  {current.firstName}, {current.age}
-                </Text>
-                <Text selectable style={{ color: colors.muted, fontSize: 16 }}>
-                  {current.city} · {current.distanceKm.toFixed(1)} km ·{' '}
-                  {t(
-                    {
-                      beginner: 'onboarding.beginner',
-                      intermediate: 'onboarding.intermediate',
-                      advanced: 'onboarding.advanced',
-                      competition: 'onboarding.competition',
-                    }[current.level],
-                  )}
-                </Text>
-                <Text selectable style={{ color: colors.ink, fontSize: 16, lineHeight: 23 }}>
+              <View className="gap-2 bg-ink px-5 py-4">
+                <View className="flex-row items-center justify-between">
+                  <Eyebrow tone="lime">{levelLabel}</Eyebrow>
+                  <Text className="font-score text-[22px] text-lime">
+                    {current.distanceKm.toFixed(1)} km
+                  </Text>
+                </View>
+                <View className="flex-row items-baseline justify-between gap-3">
+                  <Text className="flex-1 font-display text-[34px] leading-[0.95] tracking-[0.02em] text-canvas">
+                    {current.firstName}, {current.age}
+                  </Text>
+                  <Text className="font-sans-medium text-[14px] text-muted">{current.city}</Text>
+                </View>
+                <Text selectable className="font-sans text-[15px] leading-5 text-muted">
                   {current.bio}
                 </Text>
                 {current.courtNames[0] ? (
-                  <Text selectable style={{ color: colors.court, fontWeight: '600' }}>
+                  <Text selectable className="font-mono text-[11px] uppercase tracking-[0.1em] text-blue">
                     {t('discover.playsAt', {
                       courts: current.courtNames.slice(0, 2).join(' · '),
                     })}
@@ -246,30 +244,32 @@ export default function DiscoverScreen() {
             </View>
           </Animated.View>
 
-          <View style={{ flexDirection: 'row', gap: spacing.md }}>
-            <View style={{ flex: 1 }}>
+          <View className="flex-row gap-3">
+            <View className="flex-1">
               <Button
                 label={t('discover.pass')}
                 variant="secondary"
                 onPress={() => animateDecision(false)}
               />
             </View>
-            <View style={{ flex: 1 }}>
-              <Button label={t('discover.like')} onPress={() => animateDecision(true)} />
+            <View className="flex-1">
+              <Button
+                label={t('discover.like')}
+                variant="lime"
+                onPress={() => animateDecision(true)}
+              />
             </View>
           </View>
         </>
       ) : (
-        <View style={{ flex: 1, justifyContent: 'center', gap: spacing.lg }}>
-          <Text style={{ color: colors.ink, fontSize: 28, fontWeight: '800', textAlign: 'center' }}>
-            {t('discover.emptyTitle')}
-          </Text>
-          <Text style={{ color: colors.muted, fontSize: 17, lineHeight: 24, textAlign: 'center' }}>
+        <View className="flex-1 justify-center gap-4">
+          <DisplayTitle className="text-center">{t('discover.emptyTitle')}</DisplayTitle>
+          <Text className="text-center font-sans text-[17px] leading-6 text-muted">
             {t('discover.empty')}
           </Text>
           <Link href="/filters" asChild>
             <Pressable>
-              <Text style={{ color: colors.court, fontWeight: '700', textAlign: 'center' }}>
+              <Text className="text-center font-mono text-[12px] uppercase tracking-[0.12em] text-blue">
                 {t('discover.widen')}
               </Text>
             </Pressable>
@@ -279,7 +279,7 @@ export default function DiscoverScreen() {
 
       {lastPassed ? (
         <Pressable accessibilityRole="button" onPress={undoPass}>
-          <Text style={{ color: colors.muted, textAlign: 'center' }}>
+          <Text className="text-center font-mono text-[11px] uppercase tracking-[0.12em] text-muted">
             {t('discover.undo')}
           </Text>
         </Pressable>

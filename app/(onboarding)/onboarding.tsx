@@ -5,15 +5,15 @@ import * as Location from 'expo-location';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { router } from 'expo-router';
 import { use, useEffect, useMemo, useState } from 'react';
-import { Image } from 'expo-image';
-import { Alert, Pressable, Text, View } from 'react-native';
+import { Alert } from 'react-native';
 import { useTranslation } from 'react-i18next';
-import { Button, Chip, Field, Screen } from '@/components/ui';
+import { Button, Chip, DisplayTitle, Eyebrow, Field, Screen } from '@/components/ui';
 import type { MatchFormat, TennisLevel } from '@/features/matching/matching';
 import { track } from '@/lib/analytics';
 import { supabase } from '@/lib/supabase';
 import { SessionContext } from '@/providers/session-provider';
-import { colors, radius, spacing } from '@/theme';
+import { Pressable, Text, View } from '@/tw';
+import { Image } from '@/tw/image';
 
 const cities = ['Nice', 'Antibes', 'Cannes', 'Cagnes-sur-Mer', 'Menton', 'Grasse'];
 const courts = [
@@ -211,42 +211,30 @@ export default function OnboardingScreen() {
 
   return (
     <Screen>
-      <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
-        <Text style={{ color: colors.clay, fontWeight: '800' }}>CÔTE TENNIS</Text>
-        <Text style={{ color: colors.muted, fontVariant: ['tabular-nums'] }}>{progress}</Text>
+      <View className="flex-row items-center justify-between">
+        <Text className="font-mono text-[12px] uppercase tracking-[0.14em] text-lime">
+          Côte Tennis
+        </Text>
+        <Text className="font-score text-[18px] text-ink">{progress}</Text>
       </View>
 
       {step === 0 ? (
         <>
-          <Text style={{ color: colors.ink, fontSize: 32, fontWeight: '800' }}>
-            {t('onboarding.profileTitle')}
-          </Text>
+          <DisplayTitle>{t('onboarding.profileTitle')}</DisplayTitle>
           <Pressable
             accessibilityRole="button"
             accessibilityLabel="Choisir une photo"
             onPress={pickPhoto}
-            style={{ alignSelf: 'center' }}
+            className="self-center"
           >
             {form.photoUri ? (
               <Image
                 source={form.photoUri}
-                style={{ width: 128, height: 160, borderRadius: radius.lg }}
-                contentFit="cover"
+                className="h-40 w-32 rounded-md object-cover"
               />
             ) : (
-              <View
-                style={{
-                  width: 128,
-                  height: 160,
-                  borderRadius: radius.lg,
-                  backgroundColor: colors.courtLight,
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                }}
-              >
-                <Text style={{ color: colors.court, fontWeight: '700' }}>
-                  {t('onboarding.addPhoto')}
-                </Text>
+              <View className="h-40 w-32 items-center justify-center rounded-md border border-dashed border-border bg-surface">
+                <Text className="font-sans-bold text-ink">{t('onboarding.addPhoto')}</Text>
               </View>
             )}
           </Pressable>
@@ -271,10 +259,8 @@ export default function OnboardingScreen() {
             multiline
             placeholder={t('onboarding.aboutPlaceholder')}
           />
-          <Text style={{ color: colors.muted, fontSize: 17 }}>
-            {t('onboarding.identity')}
-          </Text>
-          <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: spacing.sm }}>
+          <Eyebrow>{t('onboarding.identity')}</Eyebrow>
+          <View className="flex-row flex-wrap gap-2">
             {(
               [
                 ['woman', t('onboarding.woman')],
@@ -296,13 +282,9 @@ export default function OnboardingScreen() {
 
       {step === 1 ? (
         <>
-          <Text style={{ color: colors.ink, fontSize: 32, fontWeight: '800' }}>
-            {t('onboarding.tennisTitle')}
-          </Text>
-          <Text style={{ color: colors.muted, fontSize: 17 }}>
-            {t('onboarding.currentLevel')}
-          </Text>
-          <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: spacing.sm }}>
+          <DisplayTitle>{t('onboarding.tennisTitle')}</DisplayTitle>
+          <Eyebrow>{t('onboarding.currentLevel')}</Eyebrow>
+          <View className="flex-row flex-wrap gap-2">
             {(['beginner', 'intermediate', 'advanced', 'competition'] as TennisLevel[]).map(
               (level) => (
                 <Chip
@@ -321,10 +303,8 @@ export default function OnboardingScreen() {
               ),
             )}
           </View>
-          <Text style={{ color: colors.muted, fontSize: 17 }}>
-            {t('onboarding.preferredFormat')}
-          </Text>
-          <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: spacing.sm }}>
+          <Eyebrow>{t('onboarding.preferredFormat')}</Eyebrow>
+          <View className="flex-row flex-wrap gap-2">
             {(['singles', 'doubles', 'either'] as MatchFormat[]).map((format) => (
               <Chip
                 key={format}
@@ -343,10 +323,8 @@ export default function OnboardingScreen() {
 
       {step === 2 ? (
         <>
-          <Text style={{ color: colors.ink, fontSize: 32, fontWeight: '800' }}>
-            {t('onboarding.locationTitle')}
-          </Text>
-          <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: spacing.sm }}>
+          <DisplayTitle>{t('onboarding.locationTitle')}</DisplayTitle>
+          <View className="flex-row flex-wrap gap-2">
             {cities.map((city) => (
               <Chip
                 key={city}
@@ -363,10 +341,8 @@ export default function OnboardingScreen() {
             onPress={useLocation}
             variant="secondary"
           />
-          <Text style={{ color: colors.muted, fontSize: 17 }}>
-            {t('onboarding.preferredCourts')}
-          </Text>
-          <View style={{ gap: spacing.sm }}>
+          <Eyebrow>{t('onboarding.preferredCourts')}</Eyebrow>
+          <View className="gap-2">
             {courts.map((court) => (
               <Chip
                 key={court}
@@ -381,10 +357,8 @@ export default function OnboardingScreen() {
 
       {step === 3 ? (
         <>
-          <Text style={{ color: colors.ink, fontSize: 32, fontWeight: '800' }}>
-            {t('onboarding.availabilityTitle')}
-          </Text>
-          <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: spacing.sm }}>
+          <DisplayTitle>{t('onboarding.availabilityTitle')}</DisplayTitle>
+          <View className="flex-row flex-wrap gap-2">
             {availabilityOptions.map(([value]) => (
               <Chip
                 key={value}
@@ -403,13 +377,11 @@ export default function OnboardingScreen() {
               />
             ))}
           </View>
-          <Text style={{ color: colors.muted, fontSize: 17 }}>
+          <Text className="font-sans text-[15px] text-muted">
             {t('onboarding.preferenceHint')}
           </Text>
-          <Text style={{ color: colors.muted, fontSize: 17 }}>
-            {t('onboarding.partnerPreference')}
-          </Text>
-          <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: spacing.sm }}>
+          <Eyebrow>{t('onboarding.partnerPreference')}</Eyebrow>
+          <View className="flex-row flex-wrap gap-2">
             {(
               [
                 ['everyone', t('onboarding.everyone')],
@@ -429,14 +401,15 @@ export default function OnboardingScreen() {
       ) : null}
 
       {error ? (
-        <Text selectable accessibilityRole="alert" style={{ color: colors.danger }}>
+        <Text selectable accessibilityRole="alert" className="font-sans text-danger">
           {error}
         </Text>
       ) : null}
 
-      <View style={{ marginTop: 'auto', gap: spacing.sm }}>
+      <View className="mt-auto gap-2">
         <Button
           label={step === 3 ? t('onboarding.seePlayers') : t('common.continue')}
+          variant="lime"
           disabled={!canContinue}
           loading={isSaving}
           onPress={() => (step === 3 ? void complete() : setStep(step + 1))}

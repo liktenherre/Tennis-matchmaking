@@ -2,11 +2,10 @@
 
 import { router, useLocalSearchParams } from 'expo-router';
 import { useState } from 'react';
-import { Text } from 'react-native';
 import { useTranslation } from 'react-i18next';
-import { Button, Field, Screen } from '@/components/ui';
+import { Button, DisplayTitle, Field, Screen } from '@/components/ui';
 import { supabase } from '@/lib/supabase';
-import { colors } from '@/theme';
+import { Text } from '@/tw';
 
 export default function VerifyScreen() {
   const { t } = useTranslation();
@@ -39,10 +38,8 @@ export default function VerifyScreen() {
 
   return (
     <Screen>
-      <Text style={{ color: colors.ink, fontSize: 32, fontWeight: '800' }}>
-        {t('auth.verifyTitle')}
-      </Text>
-      <Text selectable style={{ color: colors.muted, fontSize: 17 }}>
+      <DisplayTitle>{t('auth.verifyTitle')}</DisplayTitle>
+      <Text selectable className="font-sans text-[17px] text-muted">
         {t('auth.codeSent', { phone })}
       </Text>
       <Field
@@ -54,7 +51,7 @@ export default function VerifyScreen() {
         autoComplete="sms-otp"
         error={error}
       />
-      <Button label={t('auth.verify')} onPress={verify} loading={isVerifying} />
+      <Button label={t('auth.verify')} variant="lime" onPress={verify} loading={isVerifying} />
     </Screen>
   );
 }

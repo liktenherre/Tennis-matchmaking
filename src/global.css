@@ -1,0 +1,34 @@
+/* Broadcast Scoreboard theme tokens and Tailwind layers for Côte Tennis. */
+
+@import "tailwindcss/theme.css" layer(theme);
+@import "tailwindcss/preflight.css" layer(base);
+@import "tailwindcss/utilities.css";
+@import "nativewind/theme";
+
+@layer theme {
+  @theme {
+    --color-ink: #14161a;
+    --color-lime: #b4ce38;
+    --color-canvas: #f5f6f2;
+    --color-blue: #3d74e0;
+    --color-surface: #ffffff;
+    --color-muted: #8c9096;
+    --color-muted-2: #6b6b6b;
+    --color-border: #e2e4de;
+    --color-danger: #e5484d;
+
+    --font-display: "BebasNeue_400Regular";
+    --font-sans: "Saira_400Regular";
+    --font-sans-medium: "Saira_500Medium";
+    --font-sans-semibold: "Saira_600SemiBold";
+    --font-sans-bold: "Saira_700Bold";
+    --font-score: "ChakraPetch_700Bold";
+    --font-mono: "AzeretMono_400Regular";
+    --font-mono-medium: "AzeretMono_500Medium";
+
+    --radius-sm: 4px;
+    --radius-md: 6px;
+    --radius-lg: 8px;
+  }
+}
+

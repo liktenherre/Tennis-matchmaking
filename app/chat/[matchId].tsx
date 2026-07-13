@@ -2,15 +2,7 @@
 
 import { router, useLocalSearchParams } from 'expo-router';
 import { useEffect, useState } from 'react';
-import {
-  Alert,
-  FlatList,
-  KeyboardAvoidingView,
-  Pressable,
-  Text,
-  TextInput,
-  View,
-} from 'react-native';
+import { Alert } from 'react-native';
 import { useTranslation } from 'react-i18next';
 import {
   fetchMatches,
@@ -21,8 +13,17 @@ import {
 } from '@/features/chat/chat-service';
 import { blockUser, reportUser } from '@/features/matching/matching-service';
 import { track } from '@/lib/analytics';
+import { cn } from '@/lib/cn';
 import { supabase } from '@/lib/supabase';
-import { colors, radius, spacing } from '@/theme';
+import { colors } from '@/theme';
+import {
+  FlatList,
+  KeyboardAvoidingView,
+  Pressable,
+  Text,
+  TextInput,
+  View,
+} from '@/tw';
 
 export default function ChatScreen() {
   const { t } = useTranslation();
@@ -147,44 +148,36 @@ export default function ChatScreen() {
     <KeyboardAvoidingView
       behavior={process.env.EXPO_OS === 'ios' ? 'padding' : undefined}
       keyboardVerticalOffset={88}
-      style={{ flex: 1, backgroundColor: colors.canvas }}
+      className="flex-1 bg-canvas"
     >
-      <View
-        style={{
-          flexDirection: 'row',
-          justifyContent: 'space-between',
-          alignItems: 'center',
-          paddingHorizontal: spacing.md,
-          paddingVertical: spacing.sm,
-          borderBottomWidth: 1,
-          borderColor: colors.border,
-        }}
-      >
-        <Text style={{ color: colors.ink, fontWeight: '700' }}>{match?.firstName ?? ''}</Text>
+      <View className="flex-row items-center justify-between border-b border-border bg-ink px-4 py-3">
+        <Text className="font-display text-[28px] leading-none tracking-[0.02em] text-canvas">
+          {match?.firstName ?? ''}
+        </Text>
         <Pressable accessibilityRole="button" onPress={showSafetyActions}>
-          <Text style={{ color: colors.danger, fontWeight: '600' }}>{t('chat.safety')}</Text>
+          <Text className="font-mono text-[11px] uppercase tracking-[0.12em] text-danger">
+            {t('chat.safety')}
+          </Text>
         </Pressable>
       </View>
       <FlatList
         contentInsetAdjustmentBehavior="automatic"
         data={messages}
         keyExtractor={(item) => item.id}
-        contentContainerStyle={{ flexGrow: 1, justifyContent: 'flex-end', padding: spacing.md }}
+        contentContainerClassName="grow justify-end p-4"
         renderItem={({ item }) => {
           const own = item.senderId === userId;
           return (
             <View
-              style={{
-                maxWidth: '82%',
-                alignSelf: own ? 'flex-end' : 'flex-start',
-                marginVertical: spacing.xs,
-                paddingHorizontal: spacing.md,
-                paddingVertical: spacing.sm,
-                borderRadius: radius.md,
-                backgroundColor: own ? colors.court : colors.surface,
-              }}
+              className={cn(
+                'my-1 max-w-[82%] rounded-sm px-4 py-2',
+                own ? 'self-end bg-ink' : 'self-start border border-border bg-surface',
+              )}
             >
-              <Text selectable style={{ color: own ? colors.surface : colors.ink, fontSize: 16 }}>
+              <Text
+                selectable
+                className={cn('font-sans text-[16px]', own ? 'text-canvas' : 'text-ink')}
+              >
                 {item.body}
               </Text>
             </View>
@@ -192,21 +185,15 @@ export default function ChatScreen() {
         }}
       />
       {error ? (
-        <Text selectable accessibilityRole="alert" style={{ color: colors.danger, padding: spacing.sm }}>
+        <Text
+          selectable
+          accessibilityRole="alert"
+          className="px-3 py-2 font-sans text-danger"
+        >
           {error}
         </Text>
       ) : null}
-      <View
-        style={{
-          flexDirection: 'row',
-          alignItems: 'flex-end',
-          gap: spacing.sm,
-          padding: spacing.md,
-          borderTopWidth: 1,
-          borderColor: colors.border,
-          backgroundColor: colors.surface,
-        }}
-      >
+      <View className="flex-row items-end gap-2 border-t border-border bg-surface p-4">
         <TextInput
           accessibilityLabel="Message"
           value={body}
@@ -214,33 +201,19 @@ export default function ChatScreen() {
           placeholder={t('chat.placeholder')}
           placeholderTextColor={colors.muted}
           multiline
-          style={{
-            flex: 1,
-            minHeight: 44,
-            maxHeight: 120,
-            borderRadius: radius.md,
-            backgroundColor: colors.canvas,
-            color: colors.ink,
-            paddingHorizontal: spacing.md,
-            paddingVertical: spacing.sm,
-          }}
+          className="max-h-[120px] min-h-11 flex-1 rounded-sm bg-canvas px-4 py-2 font-sans text-ink"
         />
         <Pressable
           accessibilityRole="button"
           accessibilityLabel="Envoyer le message"
           disabled={!body.trim() || isSending}
           onPress={send}
-          style={{
-            minWidth: 54,
-            minHeight: 44,
-            alignItems: 'center',
-            justifyContent: 'center',
-            borderRadius: radius.pill,
-            backgroundColor: colors.court,
-            opacity: !body.trim() || isSending ? 0.45 : 1,
-          }}
+          className={cn(
+            'min-h-11 min-w-[54px] items-center justify-center rounded-sm bg-lime px-3',
+            (!body.trim() || isSending) && 'opacity-45',
+          )}
         >
-          <Text style={{ color: colors.surface, fontWeight: '700' }}>{t('chat.send')}</Text>
+          <Text className="font-sans-bold text-ink">{t('chat.send')}</Text>
         </Pressable>
       </View>
     </KeyboardAvoidingView>

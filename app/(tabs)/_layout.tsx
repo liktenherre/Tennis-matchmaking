@@ -11,9 +11,26 @@ export default function TabsLayout() {
     <Tabs
       screenOptions={{
         headerShadowVisible: false,
-        tabBarActiveTintColor: colors.court,
+        headerStyle: { backgroundColor: colors.ink },
+        headerTintColor: colors.canvas,
+        headerTitleStyle: {
+          fontFamily: 'BebasNeue_400Regular',
+          fontSize: 28,
+          letterSpacing: 0.5,
+          color: colors.canvas,
+        },
+        tabBarActiveTintColor: colors.lime,
         tabBarInactiveTintColor: colors.muted,
-        tabBarStyle: { borderTopColor: colors.border },
+        tabBarStyle: {
+          backgroundColor: colors.ink,
+          borderTopColor: '#1F2228',
+        },
+        tabBarLabelStyle: {
+          fontFamily: 'AzeretMono_400Regular',
+          fontSize: 10,
+          letterSpacing: 0.8,
+          textTransform: 'uppercase',
+        },
       }}
     >
       <Tabs.Screen

@@ -1,13 +1,12 @@
-// Starts secure phone authentication with a Côte d’Azur-first welcome screen.
+// Starts secure phone authentication with a Broadcast Scoreboard welcome.
 
 import { router } from 'expo-router';
 import { useState } from 'react';
-import { Text, View } from 'react-native';
 import { useTranslation } from 'react-i18next';
 import { z } from 'zod';
-import { Button, Field, Screen } from '@/components/ui';
+import { Button, DisplayTitle, Eyebrow, Field, Screen } from '@/components/ui';
 import { supabase } from '@/lib/supabase';
-import { colors, spacing } from '@/theme';
+import { Text, View } from '@/tw';
 
 const phoneSchema = z.string().regex(/^\+[1-9]\d{7,14}$/);
 
@@ -74,38 +73,43 @@ export default function SignInScreen() {
 
   return (
     <Screen>
-      <View style={{ flex: 1, justifyContent: 'center', gap: spacing.xl }}>
-        <View style={{ gap: spacing.md }}>
-          <Text style={{ color: colors.clay, fontSize: 18, fontWeight: '800' }}>CÔTE TENNIS</Text>
-          <Text style={{ color: colors.ink, fontSize: 38, fontWeight: '800', lineHeight: 42 }}>
-            {t('auth.title')}
-          </Text>
-          <Text style={{ color: colors.muted, fontSize: 18, lineHeight: 26 }}>
-            {t('auth.subtitle')}
-          </Text>
+      <View className="-mx-6 -mt-6 mb-2 bg-ink px-6 pb-8 pt-14">
+        <View className="mb-4 flex-row items-center justify-between">
+          <View className="rounded-sm bg-lime px-2.5 py-1">
+            <Text className="font-mono text-[11px] text-ink">LIVE</Text>
+          </View>
+          <Eyebrow tone="lime">Broadcast</Eyebrow>
         </View>
-        <Field
-          label={t('auth.phone')}
-          value={phone}
-          onChangeText={setPhone}
-          keyboardType="phone-pad"
-          textContentType="telephoneNumber"
-          autoComplete="tel"
-          error={error}
-        />
-        <Button label={t('auth.sendCode')} onPress={sendCode} loading={isSending} />
-        {__DEV__ ? (
-          <Button
-            label="Dev sign-in (email)"
-            onPress={signInAsDeveloper}
-            loading={isSending}
-            variant="secondary"
-          />
-        ) : null}
-        <Text selectable style={{ color: colors.muted, textAlign: 'center', lineHeight: 20 }}>
-          {t('auth.ageConsent')}
+        <Text className="mb-3 font-mono text-[12px] uppercase tracking-[0.14em] text-lime">
+          Côte Tennis
+        </Text>
+        <DisplayTitle className="text-[56px] text-canvas">{t('auth.title')}</DisplayTitle>
+        <Text className="mt-3 font-sans text-[17px] leading-6 text-muted">
+          {t('auth.subtitle')}
         </Text>
       </View>
+
+      <Field
+        label={t('auth.phone')}
+        value={phone}
+        onChangeText={setPhone}
+        keyboardType="phone-pad"
+        textContentType="telephoneNumber"
+        autoComplete="tel"
+        error={error}
+      />
+      <Button label={t('auth.sendCode')} variant="lime" onPress={sendCode} loading={isSending} />
+      {__DEV__ ? (
+        <Button
+          label="Dev sign-in (email)"
+          onPress={signInAsDeveloper}
+          loading={isSending}
+          variant="secondary"
+        />
+      ) : null}
+      <Text selectable className="text-center font-sans text-[14px] leading-5 text-muted">
+        {t('auth.ageConsent')}
+      </Text>
     </Screen>
   );
 }

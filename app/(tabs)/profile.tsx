@@ -1,16 +1,17 @@
 // Lets players maintain their profile, notifications, language, and account safety.
 
-import { Image } from 'expo-image';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useEffect, useState } from 'react';
-import { Alert, Switch, Text, View } from 'react-native';
+import { Alert } from 'react-native';
 import { useTranslation } from 'react-i18next';
-import { Button, Field, Screen } from '@/components/ui';
+import { Button, Eyebrow, Field, Screen } from '@/components/ui';
 import i18n, { languageStorageKey } from '@/lib/i18n';
 import { registerPushToken, revokePushToken } from '@/lib/notifications';
 import { getProfilePhotoUrls } from '@/lib/profile-photos';
 import { supabase } from '@/lib/supabase';
-import { colors, radius, spacing } from '@/theme';
+import { colors } from '@/theme';
+import { Switch, Text, View } from '@/tw';
+import { Image } from '@/tw/image';
 
 export default function ProfileScreen() {
   const { t } = useTranslation();
@@ -116,17 +117,17 @@ export default function ProfileScreen() {
 
   return (
     <Screen>
-      <Image
-        source={photoUrl ?? 'https://images.unsplash.com/photo-1595435934249-5df7ed86e1c0'}
-        style={{
-          width: 112,
-          height: 112,
-          borderRadius: radius.pill,
-          alignSelf: 'center',
-          backgroundColor: colors.courtLight,
-        }}
-        contentFit="cover"
-      />
+      <View className="items-center gap-3">
+        <Image
+          source={photoUrl ?? 'https://images.unsplash.com/photo-1595435934249-5df7ed86e1c0'}
+          className="h-28 w-28 rounded-sm bg-ink object-cover"
+        />
+        <Eyebrow tone="lime">Player card</Eyebrow>
+        <Text className="font-display text-[36px] leading-none tracking-[0.02em] text-ink">
+          {firstName || '—'}
+        </Text>
+      </View>
+
       <Field label={t('onboarding.firstName')} value={firstName} onChangeText={setFirstName} />
       <Field
         label={t('profile.about')}
@@ -134,34 +135,30 @@ export default function ProfileScreen() {
         onChangeText={(value) => setBio(value.slice(0, 180))}
         multiline
       />
-      <Button label={t('profile.save')} onPress={save} loading={isSaving} />
+      <Button label={t('profile.save')} variant="lime" onPress={save} loading={isSaving} />
 
-      <View
-        style={{
-          flexDirection: 'row',
-          alignItems: 'center',
-          justifyContent: 'space-between',
-          paddingVertical: spacing.sm,
-        }}
-      >
-        <View style={{ flex: 1, gap: spacing.xs }}>
-          <Text style={{ color: colors.ink, fontSize: 17, fontWeight: '700' }}>
-            {t('profile.notifications')}
-          </Text>
-          <Text style={{ color: colors.muted }}>{t('profile.notificationsHint')}</Text>
+      <View className="flex-row items-center justify-between border border-border bg-surface px-4 py-4">
+        <View className="mr-4 flex-1 gap-1">
+          <Text className="font-sans-bold text-[17px] text-ink">{t('profile.notifications')}</Text>
+          <Text className="font-sans text-[14px] text-muted">{t('profile.notificationsHint')}</Text>
         </View>
-        <Switch value={notificationsEnabled} onValueChange={setNotifications} />
+        <Switch
+          value={notificationsEnabled}
+          onValueChange={setNotifications}
+          trackColor={{ false: colors.border, true: colors.lime }}
+          thumbColor={colors.surface}
+        />
       </View>
 
-      <View style={{ flexDirection: 'row', gap: spacing.sm }}>
-        <View style={{ flex: 1 }}>
+      <View className="flex-row gap-2">
+        <View className="flex-1">
           <Button
             label="Français"
             variant={i18n.language === 'fr' ? 'primary' : 'secondary'}
             onPress={() => void changeLanguage('fr')}
           />
         </View>
-        <View style={{ flex: 1 }}>
+        <View className="flex-1">
           <Button
             label="English"
             variant={i18n.language === 'en' ? 'primary' : 'secondary'}
@@ -171,7 +168,7 @@ export default function ProfileScreen() {
       </View>
 
       {error ? (
-        <Text selectable accessibilityRole="alert" style={{ color: colors.danger }}>
+        <Text selectable accessibilityRole="alert" className="font-sans text-danger">
           {error}
         </Text>
       ) : null}

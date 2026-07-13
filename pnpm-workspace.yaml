@@ -1,3 +1,6 @@
 allowBuilds:
   esbuild: true
   unrs-resolver: true
+
+overrides:
+  lightningcss: 1.30.1

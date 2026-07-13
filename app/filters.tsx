@@ -2,12 +2,11 @@
 
 import { router } from 'expo-router';
 import { useEffect, useState } from 'react';
-import { Text, View } from 'react-native';
 import { useTranslation } from 'react-i18next';
-import { Button, Chip, Field, Screen } from '@/components/ui';
+import { Button, Chip, Eyebrow, Field, Screen } from '@/components/ui';
 import type { MatchFormat, TennisLevel } from '@/features/matching/matching';
 import { supabase } from '@/lib/supabase';
-import { colors, spacing } from '@/theme';
+import { Text, View } from '@/tw';
 
 const allLevels: TennisLevel[] = ['beginner', 'intermediate', 'advanced', 'competition'];
 const availabilityOptions = [
@@ -100,8 +99,8 @@ export default function FiltersScreen() {
         keyboardType="number-pad"
         onChangeText={setDistance}
       />
-      <View style={{ flexDirection: 'row', gap: spacing.md }}>
-        <View style={{ flex: 1 }}>
+      <View className="flex-row gap-4">
+        <View className="flex-1">
           <Field
             label={t('filters.minimumAge')}
             value={minimumAge}
@@ -109,7 +108,7 @@ export default function FiltersScreen() {
             onChangeText={setMinimumAge}
           />
         </View>
-        <View style={{ flex: 1 }}>
+        <View className="flex-1">
           <Field
             label={t('filters.maximumAge')}
             value={maximumAge}
@@ -118,8 +117,8 @@ export default function FiltersScreen() {
           />
         </View>
       </View>
-      <Text style={{ color: colors.ink, fontWeight: '700' }}>{t('filters.levels')}</Text>
-      <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: spacing.sm }}>
+      <Eyebrow>{t('filters.levels')}</Eyebrow>
+      <View className="flex-row flex-wrap gap-2">
         {allLevels.map((level) => (
           <Chip
             key={level}
@@ -134,8 +133,8 @@ export default function FiltersScreen() {
           />
         ))}
       </View>
-      <Text style={{ color: colors.ink, fontWeight: '700' }}>{t('filters.format')}</Text>
-      <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: spacing.sm }}>
+      <Eyebrow>{t('filters.format')}</Eyebrow>
+      <View className="flex-row flex-wrap gap-2">
         {(['singles', 'doubles', 'either'] as MatchFormat[]).map((item) => (
           <Chip
             key={item}
@@ -149,10 +148,8 @@ export default function FiltersScreen() {
           />
         ))}
       </View>
-      <Text style={{ color: colors.ink, fontWeight: '700' }}>
-        {t('filters.availability')}
-      </Text>
-      <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: spacing.sm }}>
+      <Eyebrow>{t('filters.availability')}</Eyebrow>
+      <View className="flex-row flex-wrap gap-2">
         {availabilityOptions.map(([value]) => (
           <Chip
             key={value}
@@ -169,10 +166,8 @@ export default function FiltersScreen() {
           />
         ))}
       </View>
-      <Text style={{ color: colors.ink, fontWeight: '700' }}>
-        {t('filters.partnerPreference')}
-      </Text>
-      <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: spacing.sm }}>
+      <Eyebrow>{t('filters.partnerPreference')}</Eyebrow>
+      <View className="flex-row flex-wrap gap-2">
         {(
           [
             ['everyone', t('onboarding.everyone')],
@@ -189,12 +184,13 @@ export default function FiltersScreen() {
         ))}
       </View>
       {error ? (
-        <Text selectable accessibilityRole="alert" style={{ color: colors.danger }}>
+        <Text selectable accessibilityRole="alert" className="font-sans text-danger">
           {error}
         </Text>
       ) : null}
       <Button
         label={t('filters.save')}
+        variant="lime"
         onPress={save}
         loading={isSaving}
         disabled={levels.length === 0}
