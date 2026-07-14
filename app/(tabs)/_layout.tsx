@@ -1,4 +1,4 @@
-// Defines the three primary destinations after onboarding.
+// Defines the four primary destinations after onboarding — Free is the default home.
 
 import { Tabs } from 'expo-router';
 import { useTranslation } from 'react-i18next';
@@ -34,12 +34,16 @@ export default function TabsLayout() {
       }}
     >
       <Tabs.Screen
-        name="discover"
-        options={{ title: t('tabs.discover'), tabBarLabel: t('tabs.discover') }}
+        name="free"
+        options={{ title: t('tabs.free'), tabBarLabel: t('tabs.free') }}
       />
       <Tabs.Screen
         name="matches"
         options={{ title: t('tabs.matches'), tabBarLabel: t('tabs.matches') }}
+      />
+      <Tabs.Screen
+        name="discover"
+        options={{ title: t('tabs.discover'), tabBarLabel: t('tabs.discover') }}
       />
       <Tabs.Screen
         name="profile"

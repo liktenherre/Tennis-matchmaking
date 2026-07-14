@@ -1,0 +1,18 @@
+# Covers Free post → nearby board visibility after an existing onboarding session.
+
+appId: com.cotetennis.app
+name: Free broadcast smoke
+---
+- launchApp:
+    clearState: true
+- tapOn: "Numéro de téléphone"
+- inputText: "${TEST_PHONE}"
+- tapOn: "Recevoir mon code"
+- tapOn: "Code à 6 chiffres"
+- inputText: "${TEST_OTP}"
+- tapOn: "Vérifier"
+- assertVisible: "Je suis dispo"
+- tapOn: "Je suis dispo"
+- assertVisible: "Qui est libre près de vous"
+- tapOn: "Deck"
+- assertVisible: "Autour de vous"

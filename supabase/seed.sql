@@ -14,7 +14,7 @@ insert into public.profiles (
 )
 values
   ('10000000-0000-0000-0000-000000000001', 'Camille', 1993, 'Jeu régulier, plutôt fond de court. Disponible le week-end.', 'woman', 'intermediate', '{singles,either}', 'Nice', now()),
-  ('10000000-0000-0000-0000-000000000002', 'Nicolas', 1988, 'Ancien compétiteur, partant pour des sets engagés après le travail.', 'man', 'advanced', '{singles}', 'Antibes', now()),
+  ('10000000-0000-0000-0000-000000000002', 'Nicolas', 1988, 'Ancien compétiteur, partant pour des sets engagés après le travail.', 'man', 'advanced', '{singles}', 'Nice', now()),
   ('10000000-0000-0000-0000-000000000003', 'Inès', 1997, 'J’apprends vite et cherche des échanges détendus sans pression.', 'woman', 'beginner', '{either}', 'Cagnes-sur-Mer', now()),
   ('10000000-0000-0000-0000-000000000004', 'Thomas', 1990, 'Double ou simple, surtout le samedi matin autour de Cannes.', 'man', 'intermediate', '{doubles,either}', 'Cannes', now()),
   ('10000000-0000-0000-0000-000000000005', 'Alex', 1995, 'Niveau loisir avancé, flexible sur le court et le format.', 'non_binary', 'advanced', '{either}', 'Menton', now()),
@@ -23,7 +23,7 @@ values
 insert into public.locations (user_id, city, approximate_point)
 values
   ('10000000-0000-0000-0000-000000000001', 'Nice', 'POINT(7.2620 43.7102)'),
-  ('10000000-0000-0000-0000-000000000002', 'Antibes', 'POINT(7.1251 43.5804)'),
+  ('10000000-0000-0000-0000-000000000002', 'Nice', 'POINT(7.2700 43.7050)'),
   ('10000000-0000-0000-0000-000000000003', 'Cagnes-sur-Mer', 'POINT(7.1500 43.6646)'),
   ('10000000-0000-0000-0000-000000000004', 'Cannes', 'POINT(7.0174 43.5528)'),
   ('10000000-0000-0000-0000-000000000005', 'Menton', 'POINT(7.5048 43.7745)'),
@@ -49,7 +49,7 @@ values
   ('10000000-0000-0000-0000-000000000006', 'Tennis Club de Grasse');
 
 insert into public.discovery_preferences (user_id, levels, preferred_format)
-select id, array[level]::public.tennis_level[], 'either'
+select id, enum_range(null::public.tennis_level), 'either'
 from public.profiles;
 
 insert into public.swipes (swiper_id, target_id, liked)
@@ -71,3 +71,23 @@ values (
   'Partant pour samedi matin ?',
   'seed-welcome-message'
 );
+
+-- Nice Free board samples (local Free tab smoke; soft city gate = Nice).
+insert into public.free_windows (id, user_id, starts_at, ends_at, court_names, area_label)
+values
+  (
+    '30000000-0000-0000-0000-000000000001',
+    '10000000-0000-0000-0000-000000000001',
+    now() + interval '1 hour',
+    now() + interval '4 hours',
+    array['Nice Lawn Tennis Club'],
+    'Magnan'
+  ),
+  (
+    '30000000-0000-0000-0000-000000000002',
+    '10000000-0000-0000-0000-000000000002',
+    now() + interval '2 hours',
+    now() + interval '5 hours',
+    array['Tennis Club Antibes'],
+    'Cessole'
+  );

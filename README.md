@@ -2,7 +2,7 @@
 
 # Côte Tennis
 
-Free iOS and Android matchmaking for adult tennis players around Côte d’Azur. Players verify a phone number, set their level, courts, availability, and preferences, then swipe to create mutual matches and chat.
+Free iOS and Android matchmaking for adult tennis players around Côte d’Azur. Closed beta discovery is **Free windows** (who’s free nearby → Interested → Accept → chat → We played). Mutual swipe remains a fallback deck.
 
 ## Stack
 
@@ -20,6 +20,16 @@ Free iOS and Android matchmaking for adult tennis players around Côte d’Azur.
 6. Run `pnpm start` and open the project in Expo Go.
 
 SMS delivery requires a configured Supabase phone provider outside local development. Use a test phone/OTP pair configured in Supabase for Maestro.
+
+## Closed beta ops (Free)
+
+1. `supabase db reset` (applies Free migrations) then `supabase test db`.
+2. Smoke RPCs as a Nice test user: `post_free_window` → `list_free_nearby` → `express_free_interest` / `accept_free_interest` → `confirm_played` (see [docs/free-rpc-contract.md](docs/free-rpc-contract.md)).
+3. `eas build --profile preview --platform all` and install on invitees.
+4. Fill [roster.csv](roster.csv) with ≥20–40 Nice intermediates; invite onto the preview build.
+5. T0 checklist: ≥15 onboarded + ≥1 Free post in cohort; then run the 7-day stranger-played clock.
+
+If soft Nice gate floods, insert rows into `beta_invitees` (service role) — list RPCs switch to invite-only.
 
 ## Backend setup
 
@@ -44,7 +54,7 @@ All client access uses the publishable key. Never place the Supabase service-rol
 - `supabase test db`
 - `TEST_PHONE=... TEST_OTP=... pnpm run test:e2e`
 
-Push notifications require a physical device. Test denied location, denied notifications, offline recovery, empty discovery, duplicate swipes, block/report, and account deletion before each beta.
+Push notifications require a physical device. Test denied location, denied notifications, offline recovery, empty Free board, Free→Accept→We played, swipe fallback, block/report, and account deletion before each beta.
 
 ## Release
 
@@ -52,10 +62,10 @@ Push notifications require a physical device. Test denied location, denied notif
 2. Confirm privacy and terms URLs are live.
 3. Confirm database backups, abuse triage access, and Edge Function alerts.
 4. Build the internal profile with `eas build --profile preview --platform all`.
-5. Run a small invite-only Côte d’Azur beta.
-6. Review onboarding completion, empty-deck rate, first-message conversion, and block/report rate without inspecting message content or precise locations.
-7. Promote the tested build to production.
+5. Run a small invite-only Nice beta measuring stranger `played` (not match count).
+6. Review Free empty-board rate, Accept latency, and played confirms without inspecting message content or precise locations.
+7. Promote the tested build to production after the played bar.
 
 ## Product boundaries
 
-The MVP has no payment, subscriptions, court booking, leagues, public game posts, or player ratings. Exact coordinates and phone numbers are never shown to other players.
+No payment, subscriptions, court booking, leagues, public open feeds, or player ratings. Exact coordinates and phone numbers are never shown on Free cards. Week 1 Free has no push fan-out (in-app list + inbound badges only).

@@ -1,4 +1,4 @@
-// Provides realtime match chat and immediate unmatch, block, and report controls.
+// Provides realtime match chat, We played confirmation, and safety controls.
 
 import { router, useLocalSearchParams } from 'expo-router';
 import { useEffect, useState } from 'react';
@@ -11,6 +11,11 @@ import {
   type ChatMessage,
   type MatchSummary,
 } from '@/features/chat/chat-service';
+import {
+  confirmPlayed,
+  fetchMatchSession,
+} from '@/features/free/free-service';
+import type { MatchSessionState } from '@/features/free/free';
 import { blockUser, reportUser } from '@/features/matching/matching-service';
 import { track } from '@/lib/analytics';
 import { cn } from '@/lib/cn';
@@ -33,13 +38,20 @@ export default function ChatScreen() {
   const [userId, setUserId] = useState('');
   const [body, setBody] = useState('');
   const [isSending, setIsSending] = useState(false);
+  const [session, setSession] = useState<MatchSessionState | null>(null);
+  const [isConfirming, setIsConfirming] = useState(false);
   const [error, setError] = useState('');
 
   useEffect(() => {
     if (!matchId) return;
 
-    void Promise.all([fetchMessages(matchId), fetchMatches(), supabase.auth.getUser()]).then(
-      ([initialMessages, matches, user]) => {
+    void Promise.all([
+      fetchMessages(matchId),
+      fetchMatches(),
+      supabase.auth.getUser(),
+      fetchMatchSession(matchId),
+    ])
+      .then(([initialMessages, matches, user, matchSession]) => {
         setMessages((currentMessages) => {
           const merged = new Map(
             [...initialMessages, ...currentMessages].map((message) => [message.id, message]),
@@ -50,10 +62,11 @@ export default function ChatScreen() {
         });
         setMatch(matches.find((item) => item.id === matchId) ?? null);
         setUserId(user.data.user?.id ?? '');
-      },
-    ).catch((loadError: unknown) => {
-      setError(loadError instanceof Error ? loadError.message : t('matches.loadError'));
-    });
+        setSession(matchSession);
+      })
+      .catch((loadError: unknown) => {
+        setError(loadError instanceof Error ? loadError.message : t('matches.loadError'));
+      });
 
     const channel = supabase
       .channel(`messages:${matchId}`)
@@ -104,6 +117,19 @@ export default function ChatScreen() {
     }
   };
 
+  const onWePlayed = async () => {
+    if (!matchId || session?.playedAt || session?.iConfirmed) return;
+    setIsConfirming(true);
+    try {
+      const next = await confirmPlayed(matchId);
+      setSession(next);
+    } catch {
+      setError(t('chat.wePlayedError'));
+    } finally {
+      setIsConfirming(false);
+    }
+  };
+
   const unmatch = async () => {
     if (!matchId) return;
     const { error: unmatchError } = await supabase.rpc('unmatch', { match_id_input: matchId });
@@ -144,6 +170,12 @@ export default function ChatScreen() {
     ]);
   };
 
+  const wePlayedLabel = session?.playedAt
+    ? t('chat.wePlayedBoth')
+    : session?.iConfirmed
+      ? t('chat.wePlayedDone')
+      : t('chat.wePlayed');
+
   return (
     <KeyboardAvoidingView
       behavior={process.env.EXPO_OS === 'ios' ? 'padding' : undefined}
@@ -160,6 +192,19 @@ export default function ChatScreen() {
           </Text>
         </Pressable>
       </View>
+      <Pressable
+        accessibilityRole="button"
+        accessibilityLabel={wePlayedLabel}
+        disabled={Boolean(session?.playedAt || session?.iConfirmed) || isConfirming}
+        onPress={() => void onWePlayed()}
+        className={cn(
+          'min-h-11 items-center justify-center border-b border-border px-4',
+          session?.playedAt ? 'bg-lime' : 'bg-surface',
+          (session?.iConfirmed || isConfirming) && !session?.playedAt && 'opacity-70',
+        )}
+      >
+        <Text className="font-sans-bold text-[15px] text-ink">{wePlayedLabel}</Text>
+      </Pressable>
       <FlatList
         contentInsetAdjustmentBehavior="automatic"
         data={messages}
@@ -201,7 +246,7 @@ export default function ChatScreen() {
           placeholder={t('chat.placeholder')}
           placeholderTextColor={colors.muted}
           multiline
-          className="max-h-[120px] min-h-11 flex-1 rounded-sm bg-canvas px-4 py-2 font-sans text-ink"
+          className="max-h-[120px] min-h-11 flex-1 rounded-sm bg-canvas px-4 font-sans text-ink"
         />
         <Pressable
           accessibilityRole="button"

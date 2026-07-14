@@ -9,7 +9,11 @@ export type AnalyticsEvent =
   | 'first_message_sent'
   | 'user_blocked'
   | 'user_reported'
-  | 'operation_failed';
+  | 'operation_failed'
+  | 'free_posted'
+  | 'interest_expressed'
+  | 'session_confirmed'
+  | 'played';
 
 const forbiddenKeys = new Set([
   'message',

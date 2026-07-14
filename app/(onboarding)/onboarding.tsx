@@ -197,7 +197,7 @@ export default function OnboardingScreen() {
       await refreshProfile();
       if (draftKey) await AsyncStorage.removeItem(draftKey);
       void track('onboarding_completed', { steps: 4 });
-      router.replace('/discover');
+      router.replace('/free');
     } catch (completionError) {
       setError(
         completionError instanceof Error

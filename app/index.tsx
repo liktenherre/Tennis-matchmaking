@@ -11,5 +11,5 @@ export default function IndexRoute() {
   if (!session) return <Redirect href="/sign-in" />;
   if (!isOnboarded) return <Redirect href="/onboarding" />;
 
-  return <Redirect href="/discover" />;
+  return <Redirect href="/free" />;
 }
