@@ -8,6 +8,7 @@ import { use, useEffect, useMemo, useState } from 'react';
 import { Alert } from 'react-native';
 import { useTranslation } from 'react-i18next';
 import { Button, Chip, DisplayTitle, Eyebrow, Field, Screen } from '@/components/ui';
+import { toggleMatchFormats } from '@/features/matching/formats';
 import type { MatchFormat, TennisLevel } from '@/features/matching/matching';
 import { track } from '@/lib/analytics';
 import { supabase } from '@/lib/supabase';
@@ -25,10 +26,10 @@ const courts = [
   'Tennis Club Menton',
 ];
 const availabilityOptions = [
-  ['weekday_morning', 'Semaine matin'],
-  ['weekday_evening', 'Semaine soir'],
-  ['weekend_morning', 'Week-end matin'],
-  ['weekend_afternoon', 'Week-end après-midi'],
+  'weekday_morning',
+  'weekday_evening',
+  'weekend_morning',
+  'weekend_afternoon',
 ] as const;
 
 type FormState = {
@@ -223,7 +224,7 @@ export default function OnboardingScreen() {
           <DisplayTitle>{t('onboarding.profileTitle')}</DisplayTitle>
           <Pressable
             accessibilityRole="button"
-            accessibilityLabel="Choisir une photo"
+            accessibilityLabel={t('onboarding.addPhoto')}
             onPress={pickPhoto}
             className="self-center"
           >
@@ -314,7 +315,9 @@ export default function OnboardingScreen() {
                   either: t('onboarding.either'),
                 }[format]}
                 selected={form.formats.includes(format)}
-                onPress={() => setForm({ ...form, formats: toggle(form.formats, format) })}
+                onPress={() =>
+                  setForm({ ...form, formats: toggleMatchFormats(form.formats, format) })
+                }
               />
             ))}
           </View>
@@ -359,7 +362,7 @@ export default function OnboardingScreen() {
         <>
           <DisplayTitle>{t('onboarding.availabilityTitle')}</DisplayTitle>
           <View className="flex-row flex-wrap gap-2">
-            {availabilityOptions.map(([value]) => (
+            {availabilityOptions.map((value) => (
               <Chip
                 key={value}
                 label={t(
