@@ -35,19 +35,39 @@ export default function TabsLayout() {
     >
       <Tabs.Screen
         name="free"
-        options={{ title: t('tabs.free'), tabBarLabel: t('tabs.free') }}
+        options={{
+          title: t('tabs.free'),
+          tabBarLabel: t('tabs.free'),
+          tabBarAccessibilityLabel: t('tabs.free'),
+          tabBarIcon: () => null,
+        }}
       />
       <Tabs.Screen
         name="matches"
-        options={{ title: t('tabs.matches'), tabBarLabel: t('tabs.matches') }}
+        options={{
+          title: t('tabs.matches'),
+          tabBarLabel: t('tabs.matches'),
+          tabBarAccessibilityLabel: t('tabs.matches'),
+          tabBarIcon: () => null,
+        }}
       />
       <Tabs.Screen
         name="discover"
-        options={{ title: t('tabs.discover'), tabBarLabel: t('tabs.discover') }}
+        options={{
+          title: t('tabs.discover'),
+          tabBarLabel: t('tabs.discover'),
+          tabBarAccessibilityLabel: t('tabs.discover'),
+          tabBarIcon: () => null,
+        }}
       />
       <Tabs.Screen
         name="profile"
-        options={{ title: t('tabs.profile'), tabBarLabel: t('tabs.profile') }}
+        options={{
+          title: t('tabs.profile'),
+          tabBarLabel: t('tabs.profile'),
+          tabBarAccessibilityLabel: t('tabs.profile'),
+          tabBarIcon: () => null,
+        }}
       />
     </Tabs>
   );
