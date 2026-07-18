@@ -42,3 +42,9 @@ Exceptions use `errcode = 'P0001'` with a short message and a `hint` (problem â†
 ## Analytics allowlist
 
 `free_posted`, `interest_expressed`, `session_confirmed`, `played` (+ existing match/chat events).
+
+## Related
+
+- [User journey + Mermaid](./explanation-user-journey.md)
+- [Architecture reference](./reference-architecture.md)
+- [How to run closed beta](./howto-closed-beta.md)

@@ -6,20 +6,33 @@ Free iOS and Android matchmaking for adult tennis players around Côte d’Azur.
 
 ## Stack
 
-- Expo SDK 55, React Native, TypeScript, and Expo Router
+- Expo SDK 57, React Native, TypeScript, and Expo Router
 - Supabase Auth, Postgres/PostGIS, Storage, Realtime, and Edge Functions
 - Vitest for domain rules, pgTAP for database security, and Maestro for device flows
+
+## Documentation
+
+| Doc | Quadrant | Description |
+|-----|----------|-------------|
+| [docs/tutorial-getting-started.md](docs/tutorial-getting-started.md) | Tutorial | Clone → local Free window |
+| [docs/howto-local-development.md](docs/howto-local-development.md) | How-to | Day-to-day local setup and troubleshooting |
+| [docs/howto-closed-beta.md](docs/howto-closed-beta.md) | How-to | Nice closed beta ops and played metric |
+| [docs/reference-architecture.md](docs/reference-architecture.md) | Reference | Routes, tables, RPCs, env vars |
+| [docs/explanation-user-journey.md](docs/explanation-user-journey.md) | Explanation | Why Free-first + Mermaid user flow |
+| [docs/free-rpc-contract.md](docs/free-rpc-contract.md) | Reference | Free RPC args, gates, glossary |
+| [docs/privacy-policy.md](docs/privacy-policy.md) | Legal | Privacy policy |
 
 ## Local setup
 
 1. Install Node 22, Docker, the Supabase CLI, and Expo Go.
-2. Copy `.env.example` to `.env`.
-3. Run `pnpm install`.
-4. Run `supabase start`, then `supabase db reset`.
-5. Put the local Supabase URL and publishable key printed by the CLI into `.env`.
-6. Run `pnpm start` and open the project in Expo Go.
+2. Run `pnpm install`.
+3. Run `supabase start`, then `supabase db reset`.
+4. Create `.env` with `EXPO_PUBLIC_SUPABASE_URL` and `EXPO_PUBLIC_SUPABASE_PUBLISHABLE_KEY` from the CLI.
+5. Run `pnpm start` and open the project in Expo Go.
 
-SMS delivery requires a configured Supabase phone provider outside local development. Use a test phone/OTP pair configured in Supabase for Maestro.
+Walkthrough: [docs/tutorial-getting-started.md](docs/tutorial-getting-started.md).
+
+SMS delivery requires a configured Supabase phone provider outside local development. Use a test phone/OTP pair configured in Supabase for Maestro, or the local developer sign-in on the sign-in screen.
 
 ## Closed beta ops (Free)
 
