@@ -1,0 +1,27 @@
+{
+  "date": "2026-07-18",
+  "url": "http://localhost:8081",
+  "healthScore": 88,
+  "baselineHealthScore": 65,
+  "issues": [
+    { "id": "ISSUE-001", "title": "Expired Free presets still selectable", "severity": "high", "category": "functional", "status": "verified" },
+    { "id": "ISSUE-002", "title": "Free load errors swallowed", "severity": "high", "category": "ux", "status": "verified" },
+    { "id": "ISSUE-003", "title": "Singles and Both both selected", "severity": "medium", "category": "ux", "status": "verified" },
+    { "id": "ISSUE-004", "title": "Photo a11y label hard-coded French", "severity": "low", "category": "accessibility", "status": "verified" },
+    { "id": "ISSUE-005", "title": "Deck failed when profile-photos Edge Function down", "severity": "high", "category": "functional", "status": "verified" },
+    { "id": "ISSUE-006", "title": "Tab a11y names included chevron glyphs", "severity": "medium", "category": "accessibility", "status": "verified" },
+    { "id": "ISSUE-007", "title": "list_free_nearby ends_at ambiguous", "severity": "high", "category": "functional", "status": "verified" },
+    { "id": "ISSUE-008", "title": "Paris copy on Nice beta Free board", "severity": "low", "category": "content", "status": "deferred" },
+    { "id": "ISSUE-009", "title": "Possible self-card on Deck", "severity": "medium", "category": "functional", "status": "deferred" }
+  ],
+  "categoryScores": {
+    "console": 85,
+    "links": 100,
+    "visual": 90,
+    "functional": 85,
+    "ux": 85,
+    "performance": 90,
+    "content": 75,
+    "accessibility": 90
+  }
+}
