@@ -15,6 +15,7 @@ import { Button, DisplayTitle, Eyebrow, Screen } from '@/components/ui';
 import type { DiscoveryPreferences, DiscoveryProfile } from '@/features/matching/matching';
 import { fetchCandidates, recordSwipe } from '@/features/matching/matching-service';
 import { track } from '@/lib/analytics';
+import { getErrorMessage } from '@/lib/errors';
 import { supabase } from '@/lib/supabase';
 import { colors, spacing } from '@/theme';
 import { Image } from '@/tw/image';
@@ -61,7 +62,7 @@ export default function DiscoverScreen() {
       setProfiles(candidates);
       void track('discovery_loaded', { candidateCount: candidates.length });
     } catch (loadError) {
-      setError(loadError instanceof Error ? loadError.message : t('discover.loadError'));
+      setError(getErrorMessage(loadError, t('discover.loadError')));
     } finally {
       setIsLoading(false);
     }
