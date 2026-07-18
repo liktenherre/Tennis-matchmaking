@@ -1,12 +1,12 @@
 // Free tab: post a window, browse who’s free nearby, inbound Accept.
 
 import { router, useFocusEffect } from 'expo-router';
-import { useCallback, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { ActivityIndicator, Alert } from 'react-native';
 import { useTranslation } from 'react-i18next';
 import { Button, Chip, DisplayTitle, Eyebrow, Field, Screen } from '@/components/ui';
 import {
-  FREE_PRESETS,
+  availableFreePresets,
   formatFreeWindowRange,
   freeCardPlaceLabel,
   freeWindowStatus,
@@ -24,20 +24,31 @@ import {
   postFreeWindow,
 } from '@/features/free/free-service';
 import { track } from '@/lib/analytics';
+import { getErrorMessage } from '@/lib/errors';
 import { colors } from '@/theme';
 import { Pressable, Text, View } from '@/tw';
 
 export default function FreeScreen() {
   const { t, i18n } = useTranslation();
+  const presets = useMemo(() => availableFreePresets(), []);
   const [myWindow, setMyWindow] = useState<FreeWindow | null>(null);
   const [inbound, setInbound] = useState<InboundInterest[]>([]);
   const [nearby, setNearby] = useState<FreeCard[]>([]);
-  const [preset, setPreset] = useState<Exclude<FreePreset, 'custom'>>('today_pm');
+  const [preset, setPreset] = useState<Exclude<FreePreset, 'custom'>>(
+    () => availableFreePresets()[0] ?? 'tomorrow_am',
+  );
   const [areaLabel, setAreaLabel] = useState('');
   const [isLoading, setIsLoading] = useState(true);
   const [isPosting, setIsPosting] = useState(false);
   const [busyId, setBusyId] = useState('');
   const [error, setError] = useState('');
+
+  // Keeps selection on a still-open Paris slot when today_am/pm roll off.
+  useEffect(() => {
+    if (presets.length > 0 && !presets.includes(preset)) {
+      setPreset(presets[0]);
+    }
+  }, [presets, preset]);
 
   const load = useCallback(async () => {
     setIsLoading(true);
@@ -49,7 +60,8 @@ export default function FreeScreen() {
       setNearby(cards);
       void track('discovery_loaded', { surface: 'free', candidateCount: cards.length });
     } catch (loadError) {
-      setError(loadError instanceof Error ? loadError.message : t('free.loadError'));
+      setNearby([]);
+      setError(getErrorMessage(loadError, t('free.loadError')));
     } finally {
       setIsLoading(false);
     }
@@ -65,13 +77,17 @@ export default function FreeScreen() {
   const locale = i18n.language.startsWith('en') ? 'en' : 'fr';
 
   const post = async () => {
+    if (!presets.includes(preset)) {
+      setError(t('free.presetEnded'));
+      return;
+    }
     setIsPosting(true);
     setError('');
     try {
       await postFreeWindow({ preset, areaLabel });
       await load();
     } catch (postError) {
-      setError(postError instanceof Error ? postError.message : t('free.postError'));
+      setError(getErrorMessage(postError, t('free.postError')));
     } finally {
       setIsPosting(false);
     }
@@ -82,7 +98,7 @@ export default function FreeScreen() {
       await cancelFreeWindow();
       await load();
     } catch (cancelError) {
-      setError(cancelError instanceof Error ? cancelError.message : t('free.postError'));
+      setError(getErrorMessage(cancelError, t('free.postError')));
     }
   };
 
@@ -96,7 +112,7 @@ export default function FreeScreen() {
         ),
       );
     } catch (interestError) {
-      setError(interestError instanceof Error ? interestError.message : t('free.interestError'));
+      setError(getErrorMessage(interestError, t('free.interestError')));
     } finally {
       setBusyId('');
     }
@@ -113,7 +129,7 @@ export default function FreeScreen() {
       );
       router.push(`/chat/${result.match_id}`);
     } catch (acceptError) {
-      setError(acceptError instanceof Error ? acceptError.message : t('free.acceptError'));
+      setError(getErrorMessage(acceptError, t('free.acceptError')));
     } finally {
       setBusyId('');
     }
@@ -155,14 +171,18 @@ export default function FreeScreen() {
               {status === 'expired' ? t('free.expiredHint') : t('free.noWindowHint')}
             </Text>
             <View className="flex-row flex-wrap gap-2">
-              {FREE_PRESETS.map((value) => (
-                <Chip
-                  key={value}
-                  label={t(`free.presets.${value}`)}
-                  selected={preset === value}
-                  onPress={() => setPreset(value)}
-                />
-              ))}
+              {presets.length === 0 ? (
+                <Text className="font-sans text-[15px] text-muted2">{t('free.noOpenPresets')}</Text>
+              ) : (
+                presets.map((value) => (
+                  <Chip
+                    key={value}
+                    label={t(`free.presets.${value}`)}
+                    selected={preset === value}
+                    onPress={() => setPreset(value)}
+                  />
+                ))
+              )}
             </View>
             <Field
               label={t('free.areaLabel')}
@@ -214,7 +234,15 @@ export default function FreeScreen() {
 
       <View className="gap-3">
         <Eyebrow>{t('free.nearby')}</Eyebrow>
-        {nearby.length === 0 ? (
+        {error && nearby.length === 0 ? (
+          <View className="gap-3 border border-dashed border-border p-4">
+            <Text className="font-display text-[28px] leading-none text-ink">
+              {t('free.loadTitle')}
+            </Text>
+            <Text className="font-sans text-[15px] text-muted2">{t('free.loadHint')}</Text>
+            <Button label={t('free.retry')} onPress={() => void load()} variant="secondary" />
+          </View>
+        ) : nearby.length === 0 ? (
           <View className="gap-3 border border-dashed border-border p-4">
             <Text className="font-display text-[28px] leading-none text-ink">
               {t('free.emptyTitle')}
