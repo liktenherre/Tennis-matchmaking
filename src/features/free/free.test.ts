@@ -2,8 +2,10 @@
 
 import { describe, expect, it } from 'vitest';
 import {
+  availableFreePresets,
   formatFreeWindowRange,
   freeCardPlaceLabel,
+  freePresetEndsAt,
   freeWindowStatus,
 } from './free';
 
@@ -55,5 +57,22 @@ describe('free display helpers', () => {
         now,
       ),
     ).toBe('expired');
+  });
+
+  // Regression: ISSUE-001 — expired Today AM/PM stayed selectable after Paris close.
+  // Found by /qa on 2026-07-18
+  // Report: .gstack/qa-reports/qa-report-localhost-2026-07-18.md
+  it('hides Paris presets whose end time has already passed', () => {
+    const evening = new Date('2026-07-18T19:49:00.000Z'); // 21:49 Paris
+    expect(freePresetEndsAt('today_pm', evening).toISOString()).toBe(
+      '2026-07-18T18:00:00.000Z',
+    );
+    expect(availableFreePresets(evening)).toEqual(['tomorrow_am', 'tomorrow_pm']);
+    const afterNoon = new Date('2026-07-18T10:30:00.000Z'); // 12:30 Paris
+    expect(availableFreePresets(afterNoon)).toEqual([
+      'today_pm',
+      'tomorrow_am',
+      'tomorrow_pm',
+    ]);
   });
 });
