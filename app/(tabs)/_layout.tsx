@@ -1,8 +1,36 @@
 // Defines the four primary destinations after onboarding — Free is the default home.
 
+import { Ionicons } from '@expo/vector-icons';
 import { Tabs } from 'expo-router';
+import type { ComponentProps } from 'react';
 import { useTranslation } from 'react-i18next';
 import { colors } from '@/theme';
+
+type IoniconName = ComponentProps<typeof Ionicons>['name'];
+
+function TabIcon({
+  focused,
+  outline,
+  solid,
+  color,
+  size,
+}: {
+  focused: boolean;
+  outline: IoniconName;
+  solid: IoniconName;
+  color: string;
+  size: number;
+}) {
+  return (
+    <Ionicons
+      name={focused ? solid : outline}
+      size={size}
+      color={color}
+      accessibilityElementsHidden
+      importantForAccessibility="no"
+    />
+  );
+}
 
 export default function TabsLayout() {
   const { t } = useTranslation();
@@ -39,7 +67,15 @@ export default function TabsLayout() {
           title: t('tabs.free'),
           tabBarLabel: t('tabs.free'),
           tabBarAccessibilityLabel: t('tabs.free'),
-          tabBarIcon: () => null,
+          tabBarIcon: ({ color, size, focused }) => (
+            <TabIcon
+              focused={focused}
+              outline="radio-outline"
+              solid="radio"
+              color={color}
+              size={size}
+            />
+          ),
         }}
       />
       <Tabs.Screen
@@ -48,7 +84,15 @@ export default function TabsLayout() {
           title: t('tabs.matches'),
           tabBarLabel: t('tabs.matches'),
           tabBarAccessibilityLabel: t('tabs.matches'),
-          tabBarIcon: () => null,
+          tabBarIcon: ({ color, size, focused }) => (
+            <TabIcon
+              focused={focused}
+              outline="tennisball-outline"
+              solid="tennisball"
+              color={color}
+              size={size}
+            />
+          ),
         }}
       />
       <Tabs.Screen
@@ -57,7 +101,15 @@ export default function TabsLayout() {
           title: t('tabs.discover'),
           tabBarLabel: t('tabs.discover'),
           tabBarAccessibilityLabel: t('tabs.discover'),
-          tabBarIcon: () => null,
+          tabBarIcon: ({ color, size, focused }) => (
+            <TabIcon
+              focused={focused}
+              outline="layers-outline"
+              solid="layers"
+              color={color}
+              size={size}
+            />
+          ),
         }}
       />
       <Tabs.Screen
@@ -66,7 +118,15 @@ export default function TabsLayout() {
           title: t('tabs.profile'),
           tabBarLabel: t('tabs.profile'),
           tabBarAccessibilityLabel: t('tabs.profile'),
-          tabBarIcon: () => null,
+          tabBarIcon: ({ color, size, focused }) => (
+            <TabIcon
+              focused={focused}
+              outline="person-outline"
+              solid="person"
+              color={color}
+              size={size}
+            />
+          ),
         }}
       />
     </Tabs>
