@@ -65,9 +65,18 @@ All client access uses the publishable key. Never place the Supabase service-rol
 - `pnpm test`
 - `supabase db reset`
 - `supabase test db`
-- `TEST_PHONE=... TEST_OTP=... pnpm run test:e2e`
+- Maestro (local test OTP after `supabase db reset`):
 
-Push notifications require a physical device. Test denied location, denied notifications, offline recovery, empty Free board, Free→Accept→We played, swipe fallback, block/report, and account deletion before each beta.
+  ```bash
+  TEST_PHONE=+33699999999 TEST_OTP=123456 \
+  MATCHED_TEST_PHONE=+33600000001 \
+  FREE_POSTER_PHONE=+33600000001 FREE_INTEREST_PHONE=+33600000002 \
+  pnpm run test:e2e
+  ```
+
+  Flows under `.maestro/` cover onboarding, Free post smoke, Free→Accept→We played, filters/chat, report, block, and account delete. Skip mutating seed data with `maestro test .maestro --exclude-tags destructive` when you are not resetting the DB.
+
+Push notifications require a physical device. Still manually test denied location, denied notifications, offline recovery, empty Free board, and swipe fallback before each beta.
 
 ## Release
 

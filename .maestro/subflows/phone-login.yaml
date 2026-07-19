@@ -1,0 +1,16 @@
+# Shared phone OTP login. Pass PHONE (E.164) and OTP via env.
+# Excluded from top-level discovery via .maestro/config.yaml.
+
+appId: com.cotetennis.app
+tags:
+  - subflow
+---
+- tapOn: "Numéro de téléphone"
+- eraseText
+- inputText: "${PHONE}"
+- tapOn: "Recevoir mon code"
+- assertVisible: "Vérifiez votre numéro"
+- tapOn: "Code à 6 chiffres"
+- eraseText
+- inputText: "${OTP}"
+- tapOn: "Vérifier"

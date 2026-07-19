@@ -1,0 +1,25 @@
+# Destructive safety smoke: block the other player from a seeded match.
+# Re-run only after `supabase db reset` (removes Camille↔Nicolas match).
+# Env: MATCHED_TEST_PHONE=+33600000001 TEST_OTP=123456
+
+appId: com.cotetennis.app
+name: Chat block
+tags:
+  - safety
+  - destructive
+---
+- launchApp:
+    clearState: true
+- runFlow:
+    file: subflows/phone-login.yaml
+    env:
+      PHONE: "${MATCHED_TEST_PHONE}"
+      OTP: "${TEST_OTP}"
+- assertVisible: "Dispo"
+- tapOn: "Matchs"
+- assertVisible: "Partant pour samedi matin ?"
+- tapOn: "Partant pour samedi matin ?"
+- tapOn: "Sécurité"
+- tapOn: "Bloquer"
+- assertVisible: "Vos matchs"
+- assertNotVisible: "Partant pour samedi matin ?"

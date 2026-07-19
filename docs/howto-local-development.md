@@ -62,6 +62,15 @@ pnpm test
 supabase test db
 ```
 
+Maestro (simulator/device + app build). After `db reset`, local `test_otp` numbers work:
+
+```bash
+TEST_PHONE=+33699999999 TEST_OTP=123456 \
+MATCHED_TEST_PHONE=+33600000001 \
+FREE_POSTER_PHONE=+33600000001 FREE_INTEREST_PHONE=+33600000002 \
+pnpm run test:e2e
+```
+
 In the app: Free tab loads without error; posting a window refreshes your “your window” card; Deck still opens under Discover.
 
 ## Troubleshooting

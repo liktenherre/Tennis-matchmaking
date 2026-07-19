@@ -1,0 +1,57 @@
+# Free funnel on one device: Interest → Accept → chat → dual We played.
+# Expects seeded Nice Free windows (Camille/Nicolas) after `supabase db reset`.
+# Env: FREE_POSTER_PHONE=+33600000001 FREE_INTEREST_PHONE=+33600000002 TEST_OTP=123456
+
+appId: com.cotetennis.app
+name: Free accept and We played
+tags:
+  - free
+  - critical
+---
+# Interest side: Nicolas sees Camille's seeded window.
+- launchApp:
+    clearState: true
+- runFlow:
+    file: subflows/phone-login.yaml
+    env:
+      PHONE: "${FREE_INTEREST_PHONE}"
+      OTP: "${TEST_OTP}"
+- assertVisible: "Dispo"
+- assertVisible: "Camille"
+- tapOn: "Ça m’intéresse"
+- assertVisible: "En attente"
+
+# Poster side: Camille accepts inbound interest.
+- launchApp:
+    clearState: true
+- runFlow:
+    file: subflows/phone-login.yaml
+    env:
+      PHONE: "${FREE_POSTER_PHONE}"
+      OTP: "${TEST_OTP}"
+- assertVisible: "Intéressés"
+- tapOn: "Accepter"
+- tapOn:
+    text: "OK"
+    optional: true
+- assertVisible: "On a joué"
+- tapOn: "Message"
+- inputText: "On joue cet après-midi ?"
+- tapOn: "Envoyer"
+- assertVisible: "On joue cet après-midi ?"
+- tapOn: "On a joué"
+- assertVisible: "Confirmé — en attente de l’autre"
+
+# Interest side again: second We played sets played_at.
+- launchApp:
+    clearState: true
+- runFlow:
+    file: subflows/phone-login.yaml
+    env:
+      PHONE: "${FREE_INTEREST_PHONE}"
+      OTP: "${TEST_OTP}"
+- tapOn: "Matchs"
+- tapOn: "Camille"
+- assertVisible: "On a joué"
+- tapOn: "On a joué"
+- assertVisible: "Session confirmée"

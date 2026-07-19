@@ -1,0 +1,27 @@
+# Safety smoke: open seeded match chat and submit a report (match kept).
+# Env: MATCHED_TEST_PHONE=+33600000001 TEST_OTP=123456
+
+appId: com.cotetennis.app
+name: Chat report
+tags:
+  - safety
+  - smoke
+---
+- launchApp:
+    clearState: true
+- runFlow:
+    file: subflows/phone-login.yaml
+    env:
+      PHONE: "${MATCHED_TEST_PHONE}"
+      OTP: "${TEST_OTP}"
+- assertVisible: "Dispo"
+- tapOn: "Matchs"
+- assertVisible: "Partant pour samedi matin ?"
+- tapOn: "Partant pour samedi matin ?"
+- assertVisible: "On a joué"
+- tapOn: "Sécurité"
+- tapOn: "Signaler"
+- assertVisible: "Signalement reçu"
+- tapOn:
+    text: "OK"
+    optional: true

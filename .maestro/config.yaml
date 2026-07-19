@@ -1,0 +1,35 @@
+# Maestro workspace for Côte Tennis device flows.
+#
+# Local defaults (supabase/config.toml test_otp):
+#   TEST_OTP=123456
+#   TEST_PHONE=+33699999999          # disposable signup / delete
+#   MATCHED_TEST_PHONE=+33600000001  # Camille — seeded match + Free window
+#   FREE_POSTER_PHONE=+33600000001   # Camille — Accept / We played poster
+#   FREE_INTEREST_PHONE=+33600000002 # Nicolas — Interest / second We played
+#
+# Example:
+#   TEST_PHONE=+33699999999 TEST_OTP=123456 \
+#   MATCHED_TEST_PHONE=+33600000001 \
+#   FREE_POSTER_PHONE=+33600000001 FREE_INTEREST_PHONE=+33600000002 \
+#   pnpm run test:e2e
+#
+# Skip destructive flows when reusing a seeded DB without reset:
+#   maestro test .maestro --exclude-tags destructive
+
+appId: com.cotetennis.app
+
+# Do not run shared helpers as top-level tests.
+flows:
+  - "*"
+  - "!subflows/**"
+
+executionOrder:
+  continueOnFailure: true
+  flowsOrder:
+    - auth-onboarding
+    - free-broadcast
+    - free-accept-played
+    - discovery-safety
+    - chat-report
+    - chat-block
+    - account-delete

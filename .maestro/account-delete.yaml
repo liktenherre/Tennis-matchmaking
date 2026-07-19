@@ -1,0 +1,23 @@
+# Account deletion smoke for a disposable onboarded test phone.
+# Prefer running after auth-onboarding with the same TEST_PHONE.
+# Env: TEST_PHONE=+33699999999 TEST_OTP=123456
+
+appId: com.cotetennis.app
+name: Account delete
+tags:
+  - safety
+  - destructive
+---
+- launchApp:
+    clearState: true
+- runFlow:
+    file: subflows/phone-login.yaml
+    env:
+      PHONE: "${TEST_PHONE}"
+      OTP: "${TEST_OTP}"
+- tapOn: "Profil"
+- tapOn: "Supprimer mon compte"
+- assertVisible: "Supprimer définitivement le compte ?"
+- tapOn: "Supprimer"
+- assertVisible: "Numéro de téléphone"
+- assertVisible: "Recevoir mon code"
