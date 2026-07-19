@@ -57,8 +57,16 @@ export const fetchMessages = async (matchId: string): Promise<ChatMessage[]> => 
   }));
 };
 
+// Hermes on iOS has no Web Crypto; client_id only needs a unique 8–100 char string.
+const createClientId = () =>
+  'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, (char) => {
+    const nibble = (Math.random() * 16) | 0;
+    const value = char === 'x' ? nibble : (nibble & 0x3) | 0x8;
+    return value.toString(16);
+  });
+
 export const sendMessage = async (matchId: string, body: string) => {
-  const clientId = crypto.randomUUID();
+  const clientId = createClientId();
   const { data, error } = await supabase
     .from('messages')
     .insert({ match_id: matchId, body: body.trim(), client_id: clientId })

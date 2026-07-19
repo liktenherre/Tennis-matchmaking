@@ -69,7 +69,7 @@ export const rankCandidates = (
 ) =>
   profiles
     .filter((profile) => isCompatible(profile, preferences))
-    .toSorted(
+    .sort(
       (left, right) =>
         compatibilityScore(right, preferences) -
         compatibilityScore(left, preferences),

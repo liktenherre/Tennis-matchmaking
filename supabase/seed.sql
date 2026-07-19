@@ -91,3 +91,21 @@ values
     array['Tennis Club Antibes'],
     'Cessole'
   );
+
+-- Local-only: lets the __DEV__ sign-in picker list @cotetennis.local accounts.
+create or replace function public.list_local_dev_users()
+returns table (email text, label text)
+language sql
+security definer
+set search_path = public, auth
+as $$
+  select
+    u.email::text,
+    nullif(p.first_name, '') as label
+  from auth.users u
+  left join public.profiles p on p.id = u.id
+  where u.email like '%@cotetennis.local'
+  order by u.created_at asc;
+$$;
+
+grant execute on function public.list_local_dev_users() to anon, authenticated;

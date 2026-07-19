@@ -56,7 +56,8 @@ export default function ChatScreen() {
           const merged = new Map(
             [...initialMessages, ...currentMessages].map((message) => [message.id, message]),
           );
-          return [...merged.values()].toSorted((left, right) =>
+          // Hermes lacks Array.prototype.toSorted — sort a copy instead.
+          return [...merged.values()].sort((left, right) =>
             left.createdAt.localeCompare(right.createdAt),
           );
         });

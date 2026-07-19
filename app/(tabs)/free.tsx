@@ -1,6 +1,6 @@
 // Free tab: post a window, browse who’s free nearby, inbound Accept.
 
-import { router, useFocusEffect } from 'expo-router';
+import { Link, router, useFocusEffect } from 'expo-router';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { ActivityIndicator, Alert } from 'react-native';
 import { useTranslation } from 'react-i18next';
@@ -152,7 +152,16 @@ export default function FreeScreen() {
       </View>
 
       <View className="gap-3 border border-border bg-surface p-4">
-        <Eyebrow>{t('free.yourWindow')}</Eyebrow>
+        <View className="flex-row items-center justify-between gap-3">
+          <Eyebrow>{t('free.yourWindow')}</Eyebrow>
+          <Link href="/filters" asChild>
+            <Pressable accessibilityRole="button" accessibilityLabel={t('free.preferences')}>
+              <Text className="font-mono text-[11px] uppercase tracking-[0.12em] text-blue">
+                {t('free.preferences')}
+              </Text>
+            </Pressable>
+          </Link>
+        </View>
         {status === 'active' && myWindow ? (
           <>
             <Text className="font-display text-[28px] leading-none text-ink">
@@ -250,7 +259,15 @@ export default function FreeScreen() {
             <Text className="font-sans text-[15px] text-muted2">{t('free.emptyBody')}</Text>
             {status !== 'active' ? (
               <Button label={t('free.post')} onPress={() => void post()} variant="lime" />
-            ) : null}
+            ) : (
+              <Link href="/filters" asChild>
+                <Pressable accessibilityRole="button">
+                  <Text className="font-mono text-[12px] uppercase tracking-[0.12em] text-blue">
+                    {t('discover.widen')}
+                  </Text>
+                </Pressable>
+              </Link>
+            )}
           </View>
         ) : (
           nearby.map((card) => {

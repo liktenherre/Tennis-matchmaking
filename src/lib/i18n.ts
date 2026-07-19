@@ -41,6 +41,7 @@ const resources = {
         title: 'Je suis dispo',
         subtitle: 'Publiez une fenêtre, voyez qui est libre près de vous, acceptez l’intérêt.',
         yourWindow: 'Votre fenêtre',
+        preferences: 'Critères',
         noWindowHint: 'Choisissez un créneau Paris (≤ 24 h) pour apparaître.',
         expiredHint: 'Votre fenêtre est terminée. Republiez pour rester visible.',
         presets: {
@@ -219,6 +220,7 @@ const resources = {
         title: "I'm free",
         subtitle: 'Post a window, see who’s free nearby, accept interest.',
         yourWindow: 'Your Free window',
+        preferences: 'Preferences',
         noWindowHint: 'Pick a Paris slot (≤ 24h) to show up on the board.',
         expiredHint: 'Your window ended. Post again to stay visible.',
         presets: {
