@@ -1,6 +1,7 @@
 // Connects Free window post/list/interest/accept and played confirmation to Supabase RPCs.
 
 import { track } from '@/lib/analytics';
+import { getProfilePhotoUrls } from '@/lib/profile-photos';
 import { supabase } from '@/lib/supabase';
 import type {
   FreeCard,
@@ -25,14 +26,22 @@ export const fetchMyFreeWindow = async (): Promise<MyFreeState> => {
   const { data, error } = await supabase.rpc('get_my_free_window');
   if (error) throw error;
   const payload = data as Record<string, unknown>;
-  const inbound = ((payload.inbound as Record<string, unknown>[]) ?? []).map((row) => ({
-    fromUserId: String(row.from_user_id),
-    firstName: String(row.first_name),
-    level: String(row.level),
-    formats: (row.formats as string[]) ?? [],
-    createdAt: String(row.created_at),
-    accepted: Boolean(row.accepted),
-  }));
+  const inboundRows = (payload.inbound as Record<string, unknown>[]) ?? [];
+  const photoUrls = await getProfilePhotoUrls(
+    inboundRows.map((row) => String(row.from_user_id)),
+  );
+  const inbound = inboundRows.map((row) => {
+    const fromUserId = String(row.from_user_id);
+    return {
+      fromUserId,
+      firstName: String(row.first_name),
+      level: String(row.level),
+      formats: (row.formats as string[]) ?? [],
+      createdAt: String(row.created_at),
+      accepted: Boolean(row.accepted),
+      photoUrl: photoUrls[fromUserId] ?? null,
+    };
+  });
   return {
     window: mapWindow((payload.window as Record<string, unknown>) ?? null),
     inbound,

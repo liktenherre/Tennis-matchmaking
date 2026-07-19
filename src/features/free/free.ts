@@ -34,6 +34,7 @@ export type InboundInterest = {
   formats: string[];
   createdAt: string;
   accepted: boolean;
+  photoUrl: string | null;
 };
 
 export type MyFreeState = {

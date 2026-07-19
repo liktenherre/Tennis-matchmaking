@@ -28,6 +28,7 @@ import { track } from '@/lib/analytics';
 import { getErrorMessage } from '@/lib/errors';
 import { colors } from '@/theme';
 import { Pressable, Text, View } from '@/tw';
+import { Image } from '@/tw/image';
 
 export default function FreeScreen() {
   const { t, i18n } = useTranslation();
@@ -221,6 +222,13 @@ export default function FreeScreen() {
               key={item.fromUserId}
               className="flex-row items-center justify-between gap-3 border border-border bg-surface p-4"
             >
+              <Image
+                source={
+                  item.photoUrl ??
+                  'https://images.unsplash.com/photo-1595435934249-5df7ed86e1c0'
+                }
+                className="h-12 w-12 rounded-sm bg-ink object-cover"
+              />
               <View className="flex-1 gap-1">
                 <Text className="font-sans-bold text-[17px] text-ink">{item.firstName}</Text>
                 <Text className="font-mono text-[11px] uppercase tracking-[0.1em] text-muted">
