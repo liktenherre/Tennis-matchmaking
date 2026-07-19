@@ -4,6 +4,7 @@ import { Link, router, useFocusEffect } from 'expo-router';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { ActivityIndicator, Alert } from 'react-native';
 import { useTranslation } from 'react-i18next';
+import { BouncingTennisBall } from '@/components/bouncing-tennis-ball';
 import { Button, Chip, DisplayTitle, Eyebrow, Field, Screen } from '@/components/ui';
 import {
   availableFreePresets,
@@ -147,7 +148,10 @@ export default function FreeScreen() {
     <Screen>
       <View className="gap-2">
         <Eyebrow tone="lime">{t('free.eyebrow')}</Eyebrow>
-        <DisplayTitle>{t('free.title')}</DisplayTitle>
+        <View className="flex-row items-center gap-3">
+          <DisplayTitle>{t('free.title')}</DisplayTitle>
+          <BouncingTennisBall />
+        </View>
         <Text className="font-sans text-[16px] text-muted2">{t('free.subtitle')}</Text>
       </View>
 
