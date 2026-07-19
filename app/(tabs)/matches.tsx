@@ -1,11 +1,12 @@
 // Lists mutual matches and refreshes when conversations change.
 
-import { Link } from 'expo-router';
+import { Link, useFocusEffect } from 'expo-router';
 import { useCallback, useEffect, useState } from 'react';
 import { ActivityIndicator } from 'react-native';
 import { useTranslation } from 'react-i18next';
 import { DisplayTitle, Eyebrow } from '@/components/ui';
 import { fetchMatches, type MatchSummary } from '@/features/chat/chat-service';
+import { formatUnreadBadge } from '@/features/chat/unread';
 import { supabase } from '@/lib/supabase';
 import { colors } from '@/theme';
 import { FlatList, Pressable, Text, View } from '@/tw';
@@ -28,8 +29,14 @@ export default function MatchesScreen() {
     }
   }, [t]);
 
+  // Refresh badges after returning from chat (mark_match_read is not realtime).
+  useFocusEffect(
+    useCallback(() => {
+      void load();
+    }, [load]),
+  );
+
   useEffect(() => {
-    void load();
     const channel = supabase
       .channel('match-list')
       .on('postgres_changes', { event: '*', schema: 'public', table: 'messages' }, load)
@@ -64,33 +71,54 @@ export default function MatchesScreen() {
           </Text>
         </View>
       }
-      renderItem={({ item }) => (
-        <Link href={{ pathname: '/chat/[matchId]', params: { matchId: item.id } }} asChild>
-          <Pressable
-            accessibilityRole="button"
-            className="min-h-20 flex-row items-center gap-4 border border-border bg-surface p-4"
-          >
-            <Image
-              source={
-                item.photoUrl ??
-                'https://images.unsplash.com/photo-1595435934249-5df7ed86e1c0'
+      renderItem={({ item }) => {
+        const unreadLabel = formatUnreadBadge(item.unreadCount);
+        return (
+          <Link href={{ pathname: '/chat/[matchId]', params: { matchId: item.id } }} asChild>
+            <Pressable
+              accessibilityRole="button"
+              accessibilityLabel={
+                unreadLabel
+                  ? `${item.firstName}, ${unreadLabel} ${t('matches.unread')}`
+                  : item.firstName
               }
-              className="h-14 w-14 rounded-sm bg-ink object-cover"
-            />
-            <View className="flex-1 gap-1">
-              <View className="flex-row items-baseline justify-between gap-2">
-                <Text className="font-display text-[26px] leading-none tracking-[0.02em] text-ink">
-                  {item.firstName}
-                </Text>
-                <Eyebrow>Match</Eyebrow>
+              className="min-h-20 flex-row items-center gap-4 border border-border bg-surface p-4"
+            >
+              <View className="relative">
+                <Image
+                  source={
+                    item.photoUrl ??
+                    'https://images.unsplash.com/photo-1595435934249-5df7ed86e1c0'
+                  }
+                  className="h-14 w-14 rounded-sm bg-ink object-cover"
+                />
+                {unreadLabel ? (
+                  <View
+                    accessibilityElementsHidden
+                    importantForAccessibility="no"
+                    className="absolute -right-1.5 -top-1.5 min-h-5 min-w-5 items-center justify-center rounded-sm bg-lime px-1"
+                  >
+                    <Text className="font-mono text-[11px] leading-none text-ink">
+                      {unreadLabel}
+                    </Text>
+                  </View>
+                ) : null}
               </View>
-              <Text numberOfLines={1} className="font-sans text-[15px] text-muted">
-                {item.lastMessage ?? t('matches.greeting')}
-              </Text>
-            </View>
-          </Pressable>
-        </Link>
-      )}
+              <View className="flex-1 gap-1">
+                <View className="flex-row items-baseline justify-between gap-2">
+                  <Text className="font-display text-[26px] leading-none tracking-[0.02em] text-ink">
+                    {item.firstName}
+                  </Text>
+                  <Eyebrow>Match</Eyebrow>
+                </View>
+                <Text numberOfLines={1} className="font-sans text-[15px] text-muted">
+                  {item.lastMessage ?? t('matches.greeting')}
+                </Text>
+              </View>
+            </Pressable>
+          </Link>
+        );
+      }}
     />
   );
 }

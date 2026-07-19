@@ -89,6 +89,7 @@ Enums: `tennis_level`, `match_format`, `match_status`.
 | `beta_invitees` | Contingency invite-only gate (service role) |
 | `analytics_events` | Allowlisted product events |
 | `push_tokens` | Device tokens |
+| `match_reads` | Per-user last-read timestamps for unread badges |
 
 Stranger-visible Free and discovery rows are returned via **`security definer` RPCs**, not client joins on `profiles`.
 
@@ -109,7 +110,8 @@ See [free-rpc-contract.md](./free-rpc-contract.md) for full args and soft gates.
 | `complete_onboarding(...)` | Writes profile, location, courts, prefs; sets `onboarding_completed_at` |
 | `discover_profiles(...)` | Ranked deck candidates |
 | `record_swipe(target_user_id, liked)` | Persist swipe; may create match |
-| `list_my_matches()` | Match inbox rows |
+| `list_my_matches()` | Match inbox rows (+ `unread_count`) |
+| `mark_match_read(match_id_input)` | Clear unread badge for a conversation |
 | `unmatch(match_id_input)` | End match |
 | `delete_my_account()` | Account deletion |
 | `register_push_token` / `revoke_push_token` | Push registration |
@@ -141,7 +143,7 @@ Forbidden property keys: `message`, `phone`, `latitude`, `longitude`, `exact_loc
 | Start | `pnpm start` |
 | Lint / types / unit | `pnpm run lint`, `pnpm run typecheck`, `pnpm test` |
 | DB | `pnpm run db:reset`, `pnpm run db:test` |
-| E2E | `TEST_PHONE=... TEST_OTP=... pnpm run test:e2e` |
+| E2E | `TEST_PHONE=+33699999999 TEST_OTP=123456 MATCHED_TEST_PHONE=+33600000001 FREE_POSTER_PHONE=+33600000001 FREE_INTEREST_PHONE=+33600000002 pnpm run test:e2e` |
 
 ## Related
 

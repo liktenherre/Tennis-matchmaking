@@ -98,6 +98,7 @@ const resources = {
         greeting: 'Dites bonjour et proposez un court.',
         emptyTitle: 'À vous de jouer',
         loadError: 'Chargement impossible.',
+        unread: 'non lus',
       },
       onboarding: {
         profileTitle: 'Votre profil',
@@ -277,6 +278,7 @@ const resources = {
         greeting: 'Say hello and suggest a court.',
         emptyTitle: 'Your move',
         loadError: 'Unable to load matches.',
+        unread: 'unread',
       },
       onboarding: {
         profileTitle: 'Your profile',

@@ -1,9 +1,10 @@
-// Registers device push tokens only after the player opts into match alerts.
+// Registers device push tokens and routes match/message notification taps into chat.
 
 import Constants from 'expo-constants';
 import * as Device from 'expo-device';
 import * as Notifications from 'expo-notifications';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { router } from 'expo-router';
 import { supabase } from './supabase';
 
 const pushTokenStorageKey = 'cote-tennis:push-token';
@@ -16,6 +17,38 @@ Notifications.setNotificationHandler({
     shouldShowList: true,
   }),
 });
+
+const matchIdFromNotificationData = (data: unknown): string | null => {
+  if (!data || typeof data !== 'object') return null;
+  const matchId = (data as { matchId?: unknown }).matchId;
+  return typeof matchId === 'string' && matchId.length > 0 ? matchId : null;
+};
+
+const openMatchFromNotification = (data: unknown) => {
+  const matchId = matchIdFromNotificationData(data);
+  if (!matchId) return;
+  router.push({ pathname: '/chat/[matchId]', params: { matchId } });
+};
+
+let handledLaunchResponse = false;
+
+/** Subscribes to cold-start and foreground notification taps that target a match. */
+export const subscribeNotificationResponses = () => {
+  const subscription = Notifications.addNotificationResponseReceivedListener((response) => {
+    openMatchFromNotification(response.notification.request.content.data);
+  });
+
+  if (!handledLaunchResponse) {
+    handledLaunchResponse = true;
+    void Notifications.getLastNotificationResponseAsync().then((response) => {
+      if (!response) return;
+      openMatchFromNotification(response.notification.request.content.data);
+      void Notifications.clearLastNotificationResponseAsync();
+    });
+  }
+
+  return () => subscription.remove();
+};
 
 export const registerPushToken = async () => {
   if (!Device.isDevice) throw new Error('Les notifications nécessitent un appareil physique.');

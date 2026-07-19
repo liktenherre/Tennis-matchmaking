@@ -10,6 +10,7 @@ export type MatchSummary = {
   photoUrl: string | null;
   lastMessage: string | null;
   lastMessageAt: string | null;
+  unreadCount: number;
 };
 
 export type ChatMessage = {
@@ -36,8 +37,14 @@ export const fetchMatches = async (): Promise<MatchSummary[]> => {
       photoUrl: photoUrls[String(match.other_user_id)] ?? null,
       lastMessage: match.last_message ? String(match.last_message) : null,
       lastMessageAt: match.last_message_at ? String(match.last_message_at) : null,
+      unreadCount: Number(match.unread_count ?? 0),
     };
   });
+};
+
+export const markMatchRead = async (matchId: string) => {
+  const { error } = await supabase.rpc('mark_match_read', { match_id_input: matchId });
+  if (error) throw error;
 };
 
 export const fetchMessages = async (matchId: string): Promise<ChatMessage[]> => {

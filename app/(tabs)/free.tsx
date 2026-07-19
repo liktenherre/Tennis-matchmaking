@@ -156,9 +156,9 @@ export default function FreeScreen() {
         <Text className="font-sans text-[16px] text-muted2">{t('free.subtitle')}</Text>
       </View>
 
-      <View className="gap-3 border border-border bg-surface p-4">
+      <View className="gap-3 border border-border border-l-4 border-l-lime bg-surface p-4">
         <View className="flex-row items-center justify-between gap-3">
-          <Eyebrow>{t('free.yourWindow')}</Eyebrow>
+          <Eyebrow tone="lime">{t('free.yourWindow')}</Eyebrow>
           <Link href="/filters" asChild>
             <Pressable accessibilityRole="button" accessibilityLabel={t('free.preferences')}>
               <Text className="font-mono text-[11px] uppercase tracking-[0.12em] text-blue">

@@ -1,12 +1,13 @@
 // Provides realtime match chat, We played confirmation, and safety controls.
 
-import { router, useLocalSearchParams } from 'expo-router';
-import { useEffect, useState } from 'react';
+import { router, useFocusEffect, useLocalSearchParams } from 'expo-router';
+import { useCallback, useEffect, useState } from 'react';
 import { Alert } from 'react-native';
 import { useTranslation } from 'react-i18next';
 import {
   fetchMatches,
   fetchMessages,
+  markMatchRead,
   sendMessage,
   type ChatMessage,
   type MatchSummary,
@@ -41,6 +42,16 @@ export default function ChatScreen() {
   const [session, setSession] = useState<MatchSessionState | null>(null);
   const [isConfirming, setIsConfirming] = useState(false);
   const [error, setError] = useState('');
+
+  // Clears the match-list badge whenever this conversation is in focus.
+  useFocusEffect(
+    useCallback(() => {
+      if (!matchId) return;
+      void markMatchRead(matchId).catch(() => {
+        // Read receipts are best-effort; chat still works if this fails.
+      });
+    }, [matchId]),
+  );
 
   useEffect(() => {
     if (!matchId) return;
@@ -90,6 +101,7 @@ export default function ChatScreen() {
                   },
                 ],
           );
+          void markMatchRead(matchId).catch(() => {});
         },
       )
       .subscribe();

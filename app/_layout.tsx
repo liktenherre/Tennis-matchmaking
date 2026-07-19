@@ -14,10 +14,11 @@ import {
 import { useFonts } from 'expo-font';
 import { Stack } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
-import { use } from 'react';
+import { use, useEffect } from 'react';
 import { I18nextProvider, useTranslation } from 'react-i18next';
 import { Button } from '@/components/ui';
 import i18n from '@/lib/i18n';
+import { subscribeNotificationResponses } from '@/lib/notifications';
 import { SessionContext, SessionProvider } from '@/providers/session-provider';
 import { colors } from '@/theme';
 import { Text, View } from '@/tw';
@@ -26,6 +27,12 @@ function RootNavigator() {
   const { t } = useTranslation();
   const { session, isLoading, isOnboarded, profileError, refreshProfile } =
     use(SessionContext);
+
+  // Opens chat when the player taps a match/message push while signed in.
+  useEffect(() => {
+    if (!session || !isOnboarded) return;
+    return subscribeNotificationResponses();
+  }, [session, isOnboarded]);
 
   if (isLoading) return null;
   if (session && profileError) {
