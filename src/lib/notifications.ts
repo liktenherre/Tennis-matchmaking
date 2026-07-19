@@ -5,18 +5,22 @@ import * as Device from 'expo-device';
 import * as Notifications from 'expo-notifications';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { router } from 'expo-router';
+import { Platform } from 'react-native';
 import { supabase } from './supabase';
 
 const pushTokenStorageKey = 'cote-tennis:push-token';
+const supportsNativeNotifications = Platform.OS !== 'web';
 
-Notifications.setNotificationHandler({
-  handleNotification: async () => ({
-    shouldPlaySound: true,
-    shouldSetBadge: true,
-    shouldShowBanner: true,
-    shouldShowList: true,
-  }),
-});
+if (supportsNativeNotifications) {
+  Notifications.setNotificationHandler({
+    handleNotification: async () => ({
+      shouldPlaySound: true,
+      shouldSetBadge: true,
+      shouldShowBanner: true,
+      shouldShowList: true,
+    }),
+  });
+}
 
 const matchIdFromNotificationData = (data: unknown): string | null => {
   if (!data || typeof data !== 'object') return null;
@@ -34,6 +38,8 @@ let handledLaunchResponse = false;
 
 /** Subscribes to cold-start and foreground notification taps that target a match. */
 export const subscribeNotificationResponses = () => {
+  if (!supportsNativeNotifications) return () => {};
+
   const subscription = Notifications.addNotificationResponseReceivedListener((response) => {
     openMatchFromNotification(response.notification.request.content.data);
   });
@@ -51,6 +57,7 @@ export const subscribeNotificationResponses = () => {
 };
 
 export const registerPushToken = async () => {
+  if (!supportsNativeNotifications) return null;
   if (!Device.isDevice) throw new Error('Les notifications nécessitent un appareil physique.');
 
   const existing = await Notifications.getPermissionsAsync();
