@@ -18,3 +18,18 @@ Key routing rules:
 - Save progress → invoke /context-save
 - Resume context → invoke /context-restore
 - Author a backlog-ready spec/issue → invoke /spec
+
+## Deploy Configuration (configured by /setup-deploy)
+- Platform: EAS + Supabase
+- Production URL: none (native app / closed beta)
+- Deploy workflow: manual CLI (not auto-deploy on push)
+- Deploy status command: eas build:list --limit 1 --non-interactive
+- Merge method: squash
+- Project type: mobile app (Expo / React Native)
+- Post-deploy health check: none (CLI status only; local .env is 127.0.0.1 Supabase)
+
+### Custom deploy hooks
+- Pre-merge: pnpm run lint && pnpm run typecheck && pnpm test
+- Deploy trigger: eas build --profile preview --platform all (promote with eas build --profile production / eas submit when ready); Supabase: supabase db push + supabase functions deploy (manual)
+- Deploy status: eas build:list --limit 1 --non-interactive
+- Health check: none (no production HTTP URL yet)
