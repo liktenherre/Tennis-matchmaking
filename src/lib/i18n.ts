@@ -16,6 +16,15 @@ const resources = {
         delete: 'Supprimer',
         sessionError: 'Impossible de vérifier votre profil.',
       },
+      welcome: {
+        eyebrow: 'Broadcast',
+        title: 'Sur le court',
+        subtitle: 'Trouvez un partenaire près de vous, à votre niveau.',
+        games: 'Jeux',
+        set: 'Set',
+        cta: 'Entrer',
+        hint: 'Appuyez pour commencer',
+      },
       auth: {
         title: 'Trouvez votre prochain partenaire',
         subtitle: 'Des joueurs près de vos courts, à votre niveau.',
@@ -196,6 +205,15 @@ const resources = {
         retry: 'Try again',
         delete: 'Delete',
         sessionError: 'Unable to verify your profile.',
+      },
+      welcome: {
+        eyebrow: 'Broadcast',
+        title: 'On court',
+        subtitle: 'Find a partner nearby, at your level.',
+        games: 'Games',
+        set: 'Set',
+        cta: 'Enter',
+        hint: 'Tap to begin',
       },
       auth: {
         title: 'Find your next tennis partner',

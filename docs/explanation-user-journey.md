@@ -17,7 +17,8 @@ Mutual swipe on **Deck** remains as fallback when the Free board is empty or som
 ```mermaid
 flowchart TD
   Start([App launch]) --> Auth{Signed in?}
-  Auth -->|No| SignIn[Phone OTP sign-in]
+  Auth -->|No| Welcome[Animated welcome intro]
+  Welcome --> SignIn[Phone OTP sign-in]
   SignIn --> Verify[Enter 6-digit code]
   Verify --> Auth
   Auth -->|Yes| Onboarded{Onboarding complete?}

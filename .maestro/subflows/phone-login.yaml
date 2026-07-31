@@ -5,6 +5,9 @@ appId: com.cotetennis.app
 tags:
   - subflow
 ---
+- tapOn:
+    text: "Entrer"
+    optional: true
 - tapOn: "Numéro de téléphone"
 - eraseText
 - inputText: "${PHONE}"

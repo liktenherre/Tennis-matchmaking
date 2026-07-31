@@ -35,7 +35,7 @@ EXPO_PUBLIC_SUPABASE_PUBLISHABLE_KEY=<publishable-key>
 pnpm start
 ```
 
-Open in Expo Go. You should see the sign-in screen (Broadcast Scoreboard welcome).
+Open in Expo Go. You should see the animated Broadcast Scoreboard intro, then the sign-in screen.
 
 ## Step 3: Sign in and land on Free
 
