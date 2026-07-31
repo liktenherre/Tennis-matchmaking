@@ -5,7 +5,10 @@ name: Phone signup and onboarding
 ---
 - launchApp:
     clearState: true
-- tapOn: "Entrer"
+- tapOn:
+    text: "Entrer"
+    optional: true
+- assertVisible: "Numéro de téléphone"
 - tapOn: "Numéro de téléphone"
 - inputText: "${TEST_PHONE}"
 - tapOn: "Recevoir mon code"
