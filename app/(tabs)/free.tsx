@@ -47,8 +47,9 @@ export default function FreeScreen() {
 
   // Keeps selection on a still-open Paris slot when today_am/pm roll off.
   useEffect(() => {
-    if (presets.length > 0 && !presets.includes(preset)) {
-      setPreset(presets[0]);
+    const [firstPreset] = presets;
+    if (firstPreset && !presets.includes(preset)) {
+      setPreset(firstPreset);
     }
   }, [presets, preset]);
 

@@ -3,6 +3,7 @@
 import { Ionicons } from '@expo/vector-icons';
 import { Tabs } from 'expo-router';
 import type { ComponentProps } from 'react';
+import type { ColorValue } from 'react-native';
 import { useTranslation } from 'react-i18next';
 import { colors } from '@/theme';
 
@@ -18,7 +19,7 @@ function TabIcon({
   focused: boolean;
   outline: IoniconName;
   solid: IoniconName;
-  color: string;
+  color: ColorValue;
   size: number;
 }) {
   return (
