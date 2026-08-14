@@ -17,6 +17,7 @@ Free iOS and Android matchmaking for adult tennis players around Côte d’Azur.
 | [docs/tutorial-getting-started.md](docs/tutorial-getting-started.md) | Tutorial | Clone → local Free window |
 | [docs/howto-local-development.md](docs/howto-local-development.md) | How-to | Day-to-day local setup and troubleshooting |
 | [docs/howto-closed-beta.md](docs/howto-closed-beta.md) | How-to | Nice closed beta ops and played metric |
+| [docs/howto-web-preview.md](docs/howto-web-preview.md) | How-to | Free personal web preview (GitHub Pages + Supabase Free) |
 | [docs/reference-architecture.md](docs/reference-architecture.md) | Reference | Routes, tables, RPCs, env vars |
 | [docs/explanation-user-journey.md](docs/explanation-user-journey.md) | Explanation | Why Free-first + Mermaid user flow |
 | [docs/free-rpc-contract.md](docs/free-rpc-contract.md) | Reference | Free RPC args, gates, glossary |
@@ -33,6 +34,8 @@ Free iOS and Android matchmaking for adult tennis players around Côte d’Azur.
 Walkthrough: [docs/tutorial-getting-started.md](docs/tutorial-getting-started.md).
 
 SMS delivery requires a configured Supabase phone provider outside local development. Use a test phone/OTP pair configured in Supabase for Maestro, or the local developer sign-in on the sign-in screen.
+
+For a **$0 public URL** you can open on your phone (web only, no store/SMS): [docs/howto-web-preview.md](docs/howto-web-preview.md).
 
 ## Closed beta ops (Free)
 
