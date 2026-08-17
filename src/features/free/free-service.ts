@@ -1,6 +1,8 @@
 // Connects Free window post/list/interest/accept and played confirmation to Supabase RPCs.
 
+import { Share } from 'react-native';
 import { track } from '@/lib/analytics';
+import { freeInviteUrl } from '@/lib/invite';
 import { getProfilePhotoUrls } from '@/lib/profile-photos';
 import { supabase } from '@/lib/supabase';
 import type {
@@ -9,6 +11,18 @@ import type {
   MatchSessionState,
   MyFreeState,
 } from './free';
+
+export type FreeInviteCard = {
+  windowId: string;
+  userId: string;
+  firstName: string;
+  level: string;
+  formats: string[];
+  startsAt: string;
+  endsAt: string;
+  areaLabel: string;
+  courtNames: string[];
+};
 
 const mapWindow = (raw: Record<string, unknown> | null) => {
   if (!raw) return null;
@@ -88,6 +102,31 @@ export const listFreeNearby = async (): Promise<FreeCard[]> => {
     sharedCourtCount: Number(row.shared_court_count ?? 0),
     interested: Boolean(row.interested),
   }));
+};
+
+export const fetchFreeWindowInvite = async (windowId: string): Promise<FreeInviteCard> => {
+  const { data, error } = await supabase.rpc('get_free_window_invite', {
+    window_id_input: windowId,
+  });
+  if (error) throw error;
+  const row = data as Record<string, unknown>;
+  return {
+    windowId: String(row.window_id),
+    userId: String(row.user_id),
+    firstName: String(row.first_name),
+    level: String(row.level),
+    formats: (row.formats as string[]) ?? [],
+    startsAt: String(row.starts_at),
+    endsAt: String(row.ends_at),
+    areaLabel: String(row.area_label ?? ''),
+    courtNames: (row.court_names as string[]) ?? [],
+  };
+};
+
+export const shareFreeWindowInvite = async (windowId: string, message: string) => {
+  const url = freeInviteUrl(windowId);
+  await Share.share({ message: `${message}\n${url}`, url });
+  void track('free_invite_shared');
 };
 
 export const expressFreeInterest = async (windowId: string) => {

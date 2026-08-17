@@ -23,6 +23,7 @@ import {
   fetchMyFreeWindow,
   listFreeNearby,
   postFreeWindow,
+  shareFreeWindowInvite,
 } from '@/features/free/free-service';
 import { track } from '@/lib/analytics';
 import { getErrorMessage } from '@/lib/errors';
@@ -178,7 +179,24 @@ export default function FreeScreen() {
                 {freeCardPlaceLabel(myWindow) || myWindow.courtNames.slice(0, 2).join(', ')}
               </Text>
             ) : null}
-            <Button label={t('free.cancelWindow')} onPress={() => void cancel()} variant="secondary" />
+            <View className="gap-2">
+              <Button
+                label={t('free.shareInvite')}
+                onPress={() => {
+                  void shareFreeWindowInvite(myWindow.id, t('free.shareInviteMessage')).catch(
+                    (shareError) => {
+                      setError(getErrorMessage(shareError, t('free.shareError')));
+                    },
+                  );
+                }}
+                variant="lime"
+              />
+              <Button
+                label={t('free.cancelWindow')}
+                onPress={() => void cancel()}
+                variant="secondary"
+              />
+            </View>
           </>
         ) : (
           <>

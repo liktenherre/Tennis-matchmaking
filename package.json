@@ -15,9 +15,13 @@
     "test:watch": "vitest",
     "test:e2e": "maestro test .maestro",
     "db:reset": "supabase db reset",
-    "db:test": "supabase test db"
+    "db:test": "supabase test db",
+    "clip:sync-env": "node scripts/sync-clip-env.mjs",
+    "prebuild:ios": "node scripts/sync-clip-env.mjs && expo prebuild -p ios --clean",
+    "eas-build-post-install": "node scripts/sync-clip-env.mjs"
   },
   "dependencies": {
+    "@bacons/apple-targets": "^5.0.0",
     "@expo-google-fonts/azeret-mono": "^0.4.1",
     "@expo-google-fonts/bebas-neue": "^0.4.1",
     "@expo-google-fonts/chakra-petch": "^0.4.1",

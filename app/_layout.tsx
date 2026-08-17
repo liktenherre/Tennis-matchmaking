@@ -62,6 +62,7 @@ function RootNavigator() {
           contentStyle: { backgroundColor: colors.canvas },
         }}
       >
+        <Stack.Screen name="f/[windowId]" options={{ title: t('free.inviteTitle') }} />
         <Stack.Protected guard={!session}>
           <Stack.Screen name="(auth)" options={{ headerShown: false }} />
         </Stack.Protected>

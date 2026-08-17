@@ -1,0 +1,19 @@
+{
+  "applinks": {
+    "apps": [],
+    "details": [
+      {
+        "appIDs": ["APPLE_TEAM_ID.com.cotetennis.app"],
+        "components": [
+          {
+            "/": "/f/*",
+            "comment": "Free window invite Universal Links"
+          }
+        ]
+      }
+    ]
+  },
+  "appclips": {
+    "apps": ["APPLE_TEAM_ID.com.cotetennis.app.clip"]
+  }
+}

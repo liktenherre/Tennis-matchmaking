@@ -9,6 +9,7 @@ import {
   useMemo,
   useState,
 } from 'react';
+import { importClipSessionIfNeeded } from '@/lib/clip-session';
 import { supabase } from '@/lib/supabase';
 
 type SessionState = {
@@ -63,11 +64,16 @@ export function SessionProvider({ children }: PropsWithChildren) {
   useEffect(() => {
     let mounted = true;
 
-    void supabase.auth.getSession().then(({ data }) => {
+    // Import App Clip App Group tokens (if any), then hydrate the local session.
+    void (async () => {
+      await importClipSessionIfNeeded();
+      if (!mounted) return;
+
+      const { data } = await supabase.auth.getSession();
       if (!mounted) return;
       setSession(data.session);
       setIsAuthLoading(false);
-    });
+    })();
 
     const { data: listener } = supabase.auth.onAuthStateChange((_event, nextSession) => {
       setSession(nextSession);

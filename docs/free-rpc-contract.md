@@ -21,6 +21,8 @@ All stranger-visible Free data is returned only via `security definer` RPCs. Do 
 | `cancel_free_window` | — | void | Soft-cancel active window. |
 | `get_my_free_window` | — | `{ window, inbound[] }` | Inbound list for Accept UI. |
 | `list_free_nearby` | — | Free card rows | Nice soft gate (or `beta_invitees` if table non-empty). Distance ≤15 km. Never phone/coords. |
+| `get_free_window_invite` | `window_id_input` | Privacy-safe card JSON | Callable by `anon` + `authenticated`. Active windows only. Never phone/coords. |
+| `complete_clip_onboarding` | `first_name`, `birth_year`, `level`, `formats` | void | App Clip short onboarding; city defaults to Nice. |
 | `express_free_interest` | `window_id_input` | void | Viewer → poster. |
 | `accept_free_interest` | `window_id_input`, `from_user_id_input` | `{ matched, match_id, other_first_name }` | Uses `ensure_active_match`, seeds chat, sets `match_sessions.source_window_id`. |
 | `confirm_played` | `match_id_input` | session JSON + `just_played` | Participants only. `played_at` when both confirmed. |
@@ -41,7 +43,7 @@ Exceptions use `errcode = 'P0001'` with a short message and a `hint` (problem �
 
 ## Analytics allowlist
 
-`free_posted`, `interest_expressed`, `session_confirmed`, `played` (+ existing match/chat events).
+`free_posted`, `free_invite_shared`, `interest_expressed`, `session_confirmed`, `played` (+ existing match/chat events).
 
 ## Related
 

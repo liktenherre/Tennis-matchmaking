@@ -11,6 +11,7 @@ export type AnalyticsEvent =
   | 'user_reported'
   | 'operation_failed'
   | 'free_posted'
+  | 'free_invite_shared'
   | 'interest_expressed'
   | 'session_confirmed'
   | 'played';

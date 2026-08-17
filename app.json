@@ -9,6 +9,15 @@
     "ios": {
       "supportsTablet": false,
       "bundleIdentifier": "com.cotetennis.app",
+      "associatedDomains": [
+        "applinks:app.cotetennis.com",
+        "appclips:app.cotetennis.com"
+      ],
+      "entitlements": {
+        "com.apple.security.application-groups": [
+          "group.com.cotetennis.app"
+        ]
+      },
       "infoPlist": {
         "NSLocationWhenInUseUsageDescription": "Votre position approximative permet de trouver des partenaires proches.",
         "NSPhotoLibraryUsageDescription": "Ajoutez une photo claire à votre profil de tennis."
@@ -26,6 +35,7 @@
       "expo-font",
       "expo-localization",
       "expo-notifications",
+      "@bacons/apple-targets",
       [
         "expo-location",
         {

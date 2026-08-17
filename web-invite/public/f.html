@@ -1,0 +1,112 @@
+<!doctype html>
+<html lang="fr">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Dispo tennis · Côte Tennis</title>
+    <meta
+      name="description"
+      content="Un joueur près de Nice est libre. Ouvrez Côte Tennis pour voir la dispo."
+    />
+    <!-- App Clip / Smart App Banner: replace APP_STORE_ID after App Store Connect listing exists -->
+    <meta
+      name="apple-itunes-app"
+      content="app-id=APP_STORE_ID, app-clip-bundle-id=com.cotetennis.app.clip, app-clip-display=card"
+    />
+    <style>
+      :root {
+        --ink: #0b1f17;
+        --canvas: #f4f7f2;
+        --lime: #c8f031;
+        --muted: #5a6b62;
+        --border: #c5d0c8;
+      }
+      * {
+        box-sizing: border-box;
+      }
+      body {
+        margin: 0;
+        min-height: 100vh;
+        font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, sans-serif;
+        background: radial-gradient(120% 80% at 90% 0%, #bbf7d0 0%, var(--canvas) 40%, #eef2ea 100%);
+        color: var(--ink);
+        display: grid;
+        place-items: center;
+        padding: 2rem 1.25rem;
+      }
+      main {
+        max-width: 26rem;
+        width: 100%;
+        border-left: 4px solid var(--lime);
+        background: rgba(255, 255, 255, 0.72);
+        padding: 1.5rem;
+        border: 1px solid var(--border);
+        border-left-width: 4px;
+        border-left-color: var(--lime);
+      }
+      .eyebrow {
+        font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+        font-size: 0.7rem;
+        letter-spacing: 0.14em;
+        text-transform: uppercase;
+        color: var(--muted);
+        margin: 0 0 0.75rem;
+      }
+      h1 {
+        font-size: clamp(2rem, 7vw, 2.75rem);
+        line-height: 0.95;
+        margin: 0 0 0.75rem;
+      }
+      p {
+        color: var(--muted);
+        line-height: 1.5;
+        margin: 0 0 1rem;
+      }
+      code {
+        font-size: 0.75rem;
+        word-break: break-all;
+        color: var(--ink);
+      }
+      a.cta {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        min-height: 2.75rem;
+        padding: 0 1.25rem;
+        background: var(--lime);
+        color: var(--ink);
+        font-weight: 700;
+        text-decoration: none;
+        margin-top: 0.5rem;
+      }
+    </style>
+  </head>
+  <body>
+    <main>
+      <p class="eyebrow">Je suis dispo</p>
+      <h1>Voir cette dispo</h1>
+      <p>
+        Sur iPhone, ouvrez le lien avec Safari pour lancer l’App Clip Côte Tennis : connexion SMS,
+        profil court, puis « Ça m’intéresse ».
+      </p>
+      <p>Invitation : <code id="window-id">…</code></p>
+      <a class="cta" id="open-clip" href="#">Ouvrir Côte Tennis</a>
+    </main>
+    <script>
+      (function () {
+        var parts = location.pathname.split('/').filter(Boolean);
+        var windowId = parts[0] === 'f' ? parts[1] || '' : '';
+        var el = document.getElementById('window-id');
+        var link = document.getElementById('open-clip');
+        if (el) el.textContent = windowId || 'indisponible';
+        // Default App Clip link (iOS 16.4+); ASC experience still required for branded card.
+        var defaultClip =
+          'https://appclip.apple.com/id?p=com.cotetennis.app.clip' +
+          (windowId ? '&windowId=' + encodeURIComponent(windowId) : '');
+        if (link) {
+          link.href = windowId ? location.href : defaultClip;
+        }
+      })();
+    </script>
+  </body>
+</html>

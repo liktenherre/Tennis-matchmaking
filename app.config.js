@@ -10,7 +10,7 @@ module.exports = ({ config }) => ({
   extra: {
     ...(config.extra ?? {}),
     eas: {
-      projectId: process.env.EXPO_PUBLIC_EAS_PROJECT_ID,
+      projectId: '98bea5d7-e35d-491b-aac2-e08c5d026ce6',
     },
   },
   experiments: {
