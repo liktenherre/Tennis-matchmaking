@@ -59,7 +59,9 @@ Client (Expo public):
 |----------|---------|
 | `EXPO_PUBLIC_SUPABASE_URL` | `src/lib/supabase.ts` |
 | `EXPO_PUBLIC_SUPABASE_PUBLISHABLE_KEY` | `src/lib/supabase.ts` |
-| `EXPO_PUBLIC_EAS_PROJECT_ID` | `app.config.ts` (push / EAS) |
+| `EXPO_PUBLIC_EAS_PROJECT_ID` | `app.config.js` (push / EAS) |
+| `EXPO_PUBLIC_ENABLE_DEV_AUTH` | Personal web preview: show email bypass when not `__DEV__` |
+| `EXPO_PUBLIC_BASE_URL` | GitHub Pages subpath (`/Tennis-matchmaking`) |
 
 Server / ops (not in Expo):
 

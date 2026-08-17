@@ -1,10 +1,13 @@
-// Local-only email/password helpers for __DEV__ multi-user sign-in.
+// Email/password helpers for local __DEV__ and the personal web preview.
 
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { supabase } from '@/lib/supabase';
 
 export const DEV_PASSWORD = 'cote-tennis-dev';
 export const DEV_EMAIL_DOMAIN = 'cotetennis.local';
+
+export const isPreviewAuthEnabled =
+  Boolean(__DEV__) || process.env.EXPO_PUBLIC_ENABLE_DEV_AUTH === 'true';
 
 const storageKey = 'cote-tennis/dev-users';
 

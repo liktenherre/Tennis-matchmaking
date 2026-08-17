@@ -7,6 +7,7 @@ import { z } from 'zod';
 import { Button, DisplayTitle, Eyebrow, Field, Screen } from '@/components/ui';
 import {
   createDevUser,
+  isPreviewAuthEnabled,
   loadDevUsers,
   rememberDevUser,
   signInDevUser,
@@ -119,7 +120,7 @@ export default function SignInScreen() {
         error={error}
       />
       <Button label={t('auth.sendCode')} variant="lime" onPress={sendCode} loading={isSending} />
-      {__DEV__ ? (
+      {isPreviewAuthEnabled ? (
         <View className="gap-2">
           <Text className="font-mono text-[11px] uppercase tracking-[0.12em] text-muted">
             Dev account
