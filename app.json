@@ -31,6 +31,8 @@
       ]
     },
     "plugins": [
+      "expo-image",
+      "expo-status-bar",
       "expo-router",
       "expo-font",
       "expo-localization",
