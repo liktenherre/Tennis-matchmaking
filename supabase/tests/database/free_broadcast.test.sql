@@ -1,4 +1,6 @@
 -- pgTAP coverage for Free broadcast RPCs, privacy, Accept→match, and confirm_played.
+-- Board counts are scoped to fixture users; window ids are captured while the poster
+-- is the JWT subject so later Interested calls do not depend on own-row RLS.
 
 begin;
 create extension if not exists pgtap with schema extensions;
@@ -44,8 +46,8 @@ select set_config('request.jwt.claim.sub', '00000000-0000-0000-0000-000000000011
 select set_config('request.jwt.claim.role', 'authenticated', true);
 
 select lives_ok(
-  $$ select public.post_free_window('today_pm', null, null, 'Magnan') $$,
-  'Alice can post a Paris Today PM Free window'
+  $$ select public.post_free_window('tomorrow_am', null, null, 'Magnan') $$,
+  'Alice can post a Paris tomorrow AM Free window'
 );
 
 select is(
@@ -54,18 +56,30 @@ select is(
   'One active Free window after post'
 );
 
-select public.post_free_window('tomorrow_am', null, null, 'Cessole');
+select public.post_free_window('tomorrow_pm', null, null, 'Cessole');
 select is(
   (select count(*)::integer from public.free_windows where user_id = '00000000-0000-0000-0000-000000000011' and cancelled_at is null and ends_at > now()),
   1,
   'Repost cancels previous active window'
 );
 
+create temporary table fixture_windows (
+  alice_window_id uuid primary key
+);
+insert into fixture_windows (alice_window_id)
+select id
+from public.free_windows
+where user_id = '00000000-0000-0000-0000-000000000011'
+  and cancelled_at is null
+order by created_at desc
+limit 1;
+
 select set_config('request.jwt.claim.sub', '00000000-0000-0000-0000-000000000012', true);
 select public.post_free_window('tomorrow_pm', null, null, 'Magnan');
 
 select is(
-  (select count(*)::integer from public.list_free_nearby()),
+  (select count(*)::integer from public.list_free_nearby()
+   where user_id = '00000000-0000-0000-0000-000000000011'),
   1,
   'Bob sees Alice Free card within Nice + level filter'
 );
@@ -78,9 +92,7 @@ select is(
 );
 
 select set_config('request.jwt.claim.sub', '00000000-0000-0000-0000-000000000012', true);
-select public.express_free_interest(
-  (select id from public.free_windows where user_id = '00000000-0000-0000-0000-000000000011' and cancelled_at is null order by created_at desc limit 1)
-);
+select public.express_free_interest((select alice_window_id from fixture_windows));
 
 select is(
   (select count(*)::integer from public.free_interests),
@@ -91,7 +103,7 @@ select is(
 select set_config('request.jwt.claim.sub', '00000000-0000-0000-0000-000000000011', true);
 select is(
   (public.accept_free_interest(
-    (select id from public.free_windows where user_id = '00000000-0000-0000-0000-000000000011' and cancelled_at is null order by created_at desc limit 1),
+    (select alice_window_id from fixture_windows),
     '00000000-0000-0000-0000-000000000012'
   )->>'matched')::boolean,
   true,
@@ -142,9 +154,7 @@ select is(
 
 select set_config('request.jwt.claim.sub', '00000000-0000-0000-0000-000000000012', true);
 select lives_ok(
-  $$ select public.express_free_interest(
-    (select id from public.free_windows where user_id = '00000000-0000-0000-0000-000000000011' and cancelled_at is null order by created_at desc limit 1)
-  ) $$,
+  $$ select public.express_free_interest((select alice_window_id from fixture_windows)) $$,
   'Re-interest allowed after unmatch'
 );
 

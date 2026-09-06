@@ -1,4 +1,5 @@
 -- Exercises RLS, mutual matching, blocking, and authorized chat at the database boundary.
+-- Counts are scoped to fixture users so supabase/seed.sql players do not inflate results.
 
 begin;
 create extension if not exists pgtap with schema extensions;
@@ -30,6 +31,10 @@ select set_config('request.jwt.claim.sub', '00000000-0000-0000-0000-000000000001
 select is(
   (select count(*)::integer from public.discover_profiles(
     25, 18, 70, '{intermediate}', 'singles', '{}', 'everyone'
+  ) candidate
+  where candidate.id in (
+    '00000000-0000-0000-0000-000000000002',
+    '00000000-0000-0000-0000-000000000003'
   )),
   1,
   'Discovery returns only a compatible nearby player'
